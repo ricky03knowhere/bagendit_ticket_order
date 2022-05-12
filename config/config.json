@@ -1,10 +1,10 @@
 {
   "development": {
-    "username": "admin",
-    "password": "admin",
-    "database": "ticket_order",
-    "host": "localhost",
-    "dialect": "postgres"
+    "username": "adminx",
+    "password": "adminx",
+    "database": "ticket_orderx",
+    "host": "localhostx",
+    "dialect": "postgresx"
   },
   "test": {
     "username": "root",

@@ -30,6 +30,7 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/userRoutes")(app);
+require("./routes/pemesananRoutes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
