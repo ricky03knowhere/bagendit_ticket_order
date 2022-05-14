@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Objek_wisata extends Model {
     /**
@@ -11,16 +9,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Objek_wisata.belongsToMany(models.Tiket, { through: "tikets" });
     }
   }
-  Objek_wisata.init({
-    id_obj_wisata: DataTypes.INTEGER,
-    nama: DataTypes.STRING,
-    lokasi: DataTypes.STRING,
-    photo: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Objek_wisata',
-  });
+  Objek_wisata.init(
+    {
+      id_obj_wisata: DataTypes.INTEGER,
+      nama: DataTypes.STRING,
+      lokasi: DataTypes.STRING,
+      photo: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "Objek_wisata",
+    }
+  );
   return Objek_wisata;
 };

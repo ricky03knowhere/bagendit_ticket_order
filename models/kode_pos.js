@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Kode_pos.init(
     {
-      Kode_pos: DataTypes.INTEGER,
+      ode_pos: DataTypes.INTEGER,
       provinsi: DataTypes.STRING,
       kota: DataTypes.STRING,
       kecamatan: DataTypes.STRING,

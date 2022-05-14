@@ -10,17 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.belongsTo(models.Kode_pos, {
-        foreignKey: "kode_pos",
+        foreignKey: "np_kode_pos",
         as: "kode_pos",
       });
 
-      User.hasMany(models.Pemesanan, {as: 'pemesanans'})
+      User.hasMany(models.Pemesanan, { as: "pemesanans" });
     }
   }
   User.init(
     {
       id_user: DataTypes.INTEGER,
-      kode_pos: DataTypes.INTEGER,
+      no_kode_pos: DataTypes.INTEGER,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       is_admin: DataTypes.INTEGER,

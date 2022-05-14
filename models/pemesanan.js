@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "id_pembayaran",
         as: "pembayaran",
       });
+      Pemesanan.belongsTo(models.Detail_pemesanan);
     }
   }
   Pemesanan.init(
