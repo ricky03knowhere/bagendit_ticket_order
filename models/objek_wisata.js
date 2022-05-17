@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Objek_wisata.belongsToMany(models.Tiket, { through: "tikets" });
+      // Objek_wisata.hasMany(models.Tiket, { as: "tikets" });
     }
   }
   Objek_wisata.init(
     {
-      id_obj_wisata: DataTypes.INTEGER,
+      id_obj_wisata: DataTypes.STRING,
       nama: DataTypes.STRING,
       lokasi: DataTypes.STRING,
       photo: DataTypes.STRING,

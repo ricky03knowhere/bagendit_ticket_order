@@ -10,16 +10,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Jenis_tiket.hasMany(models.Tiket, { as: "tiket_type" });
-      Jenis_tiket.belongsToMany(models.Objek_wisata, {
-        foreignKey: "id_obj_wisata",
-        through: "objek_wisata",
-      });
+      //   Jenis_tiket.belongsTo(models.Objek_wisata, {
+      //     foreignKey: "id_obj_wisata",
+      //     through: "objek_wisata",
+      //   });
     }
   }
   Jenis_tiket.init(
     {
       id_jenis_tiket: DataTypes.INTEGER,
-      id_obj_wisata: DataTypes.INTEGER,
       nama: DataTypes.STRING,
       harga: DataTypes.INTEGER,
     },

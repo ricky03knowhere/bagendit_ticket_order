@@ -15,12 +15,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "id_jenis_tiket",
         as: "jenis_tiket",
       });
+
+      Tiket.belongsTo(models.Loket, {
+        foreignKey: "id_loket",
+        as: "tiket_loket",
+      });
     }
   }
   Tiket.init(
     {
-      id_tiket: DataTypes.INTEGER,
+      id_tiket: DataTypes.STRING,
       id_jenis_tiket: DataTypes.INTEGER,
+      id_loket: DataTypes.INTEGER,
       stok: DataTypes.INTEGER,
     },
     {
