@@ -2,10 +2,10 @@ const { jenisPembFactory } = require("../factories/dataFactory");
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert("Jenis_pembayarans", jenisPembFactory, {});
+    await queryInterface.bulkInsert("jenis_pembayarans", jenisPembFactory, {});
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Jenis_pembayarans", null, {});
+    await queryInterface.bulkDelete("jenis_pembayarans", null, {});
   },
 };

@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Objek_wisata.init(
     {
-      id_obj_wisata: DataTypes.STRING,
+      objek_wisata_id: DataTypes.STRING,
       nama: DataTypes.STRING,
       lokasi: DataTypes.STRING,
       photo: DataTypes.STRING,
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Objek_wisata",
+      underscored: true
     }
   );
   return Objek_wisata;

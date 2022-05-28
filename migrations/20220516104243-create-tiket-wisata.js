@@ -1,30 +1,30 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Tiket_wisatas', {
+    await queryInterface.createTable('tiket_wisatas', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_jenis_tiket: {
+      jenis_tiket_id: {
         type: Sequelize.INTEGER
       },
-      id_obj_wisata: {
-        type: Sequelize.INTEGER
+      objek_wisata_id: {
+        type: Sequelize.STRING
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Tiket_wisatas');
+    await queryInterface.dropTable('tiket_wisatas');
   }
 };

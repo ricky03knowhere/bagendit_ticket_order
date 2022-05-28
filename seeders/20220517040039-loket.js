@@ -4,10 +4,10 @@ const { loketFactory } = require("../factories/dataFactory");
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert("Lokets", loketFactory, {});
+    await queryInterface.bulkInsert("lokets", loketFactory, {});
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Lokets", null, {});
+    await queryInterface.bulkDelete("lokets", null, {});
   },
 };

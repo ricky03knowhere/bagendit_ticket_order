@@ -1,18 +1,18 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Pembayarans", {
+    await queryInterface.createTable("pembayarans", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      id_pembayaran: {
-        type: Sequelize.INTEGER,
+      pembayaran_id: {
+        type: Sequelize.STRING,
       },
-      id_jenis_pemb: {
-        type: Sequelize.INTEGER,
+      jenis_pembayaran_id: {
+        type: Sequelize.STRING,
       },
       kode_pembayaran: {
         type: Sequelize.INTEGER,
@@ -26,17 +26,17 @@ module.exports = {
       status: {
         type: Sequelize.ENUM("unpaid", "paid"),
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Pembayarans");
+    await queryInterface.dropTable("pembayarans");
   },
 };

@@ -14,13 +14,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Jenis_pembayaran.init(
     {
-      id_jenis_pemb: DataTypes.INTEGER,
+      jenis_pembayaran_id: DataTypes.STRING,
       nama_pemb: DataTypes.STRING,
       metode_pemb: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "Jenis_pembayaran",
+      underscored: true
     }
   );
   return Jenis_pembayaran;

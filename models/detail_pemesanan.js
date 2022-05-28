@@ -9,17 +9,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Detail_pemesanan.hasMany(models.Pemesanan, { as: "pemesanans" });
-      Detail_pemesanan.hasMany(models.Tiket, { as: "bought_tikets" });
+      Detail_pemesanan.belongsTo(models.Pemesanan);
+      Detail_pemesanan.belongsTo(models.Tiket);
       Detail_pemesanan.belongsToMany(models.Loket, { through: "lokets" });
     }
   }
   Detail_pemesanan.init(
     {
-      id_detail_pem: DataTypes.INTEGER,
-      id_pemesanan: DataTypes.INTEGER,
-      id_tiket: DataTypes.INTEGER,
-      id_loket: DataTypes.INTEGER,
+      detail_pemesanan_id: DataTypes.STRING,
+      pemesanan_id: DataTypes.STRING,
+      tiket_id: DataTypes.STRING,
       tanggal_wisata: DataTypes.DATE,
       jumlah_tiket: DataTypes.INTEGER,
       total_harga: DataTypes.INTEGER,
@@ -27,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Detail_pemesanan",
+      underscored: true
     }
   );
   return Detail_pemesanan;

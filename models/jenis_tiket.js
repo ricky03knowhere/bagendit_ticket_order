@@ -18,13 +18,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Jenis_tiket.init(
     {
-      id_jenis_tiket: DataTypes.INTEGER,
+      jenis_tiket_id: DataTypes.INTEGER,
       nama: DataTypes.STRING,
       harga: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "Jenis_tiket",
+      underscored: true
     }
   );
   return Jenis_tiket;

@@ -9,18 +9,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Loket.hasMany(models.Tiket, { through: "tiket_place" });
+      Loket.hasMany(models.Tiket, { as: "tiket_place" });
     }
   }
   Loket.init(
     {
-      id_loket: DataTypes.INTEGER,
+      loket_id: DataTypes.INTEGER,
       nama: DataTypes.STRING,
       lokasi: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "Loket",
+      underscored: true
     }
   );
   return Loket;

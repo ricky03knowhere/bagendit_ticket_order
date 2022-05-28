@@ -6,7 +6,7 @@ const Op = db.Sequelize.Op;
 exports.create = (req, res) => {
   // Create a User
   const user = req.body;
-
+console.log(user);
   // Save User in the database
   User.create(user)
     .then((data) => {
@@ -47,9 +47,11 @@ exports.findOne = (req, res) => {
   const id = req.params.id;
   User.findByPk(id)
     .then((data) => {
-      res.send(data);
+      res.json(data);
+      console.log(data);
     })
     .catch((err) => {
+      console.log(err)
       res.status(500).send({
         message: "Error retrieving User with id=" + id,
       });

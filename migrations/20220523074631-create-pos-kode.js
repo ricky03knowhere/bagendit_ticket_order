@@ -1,15 +1,18 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Kode_pos', {
+    await queryInterface.createTable('pos_kode', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      kode_pos: {
-        type: Sequelize.INTEGER
+      pos_kode_id: {
+        allowNull: false,
+        primaryKey: true,
+        unique: true,
+        type: Sequelize.STRING
       },
       provinsi: {
         type: Sequelize.STRING
@@ -23,17 +26,17 @@ module.exports = {
       desa: {
         type: Sequelize.STRING
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Kode_pos');
+    await queryInterface.dropTable('pos_kode');
   }
 };

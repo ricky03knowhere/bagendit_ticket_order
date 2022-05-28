@@ -1,14 +1,14 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Lokets', {
+    await queryInterface.createTable('lokets', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_loket: {
+      loket_id: {
         type: Sequelize.INTEGER
       },
       nama: {
@@ -17,17 +17,17 @@ module.exports = {
       lokasi: {
         type: Sequelize.STRING
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Lokets');
+    await queryInterface.dropTable('lokets');
   }
 };

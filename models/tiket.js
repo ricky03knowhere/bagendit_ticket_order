@@ -9,29 +9,30 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Tiket.belongsTo(models.Detail_pemesanan);
+      Tiket.hasMany(models.Detail_pemesanan);
 
       Tiket.belongsTo(models.Jenis_tiket, {
-        foreignKey: "id_jenis_tiket",
+        foreignKey: "jenis_tiket_id",
         as: "jenis_tiket",
       });
 
       Tiket.belongsTo(models.Loket, {
-        foreignKey: "id_loket",
+        foreignKey: "loket_id",
         as: "tiket_loket",
       });
     }
   }
   Tiket.init(
     {
-      id_tiket: DataTypes.STRING,
-      id_jenis_tiket: DataTypes.INTEGER,
-      id_loket: DataTypes.INTEGER,
+      tiket_id: DataTypes.STRING,
+      jenis_tiket_id: DataTypes.INTEGER,
+      loket_id: DataTypes.INTEGER,
       stok: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "Tiket",
+      underscored: true,
     }
   );
   return Tiket;

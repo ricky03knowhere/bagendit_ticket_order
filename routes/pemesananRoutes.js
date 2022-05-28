@@ -1,11 +1,13 @@
 module.exports = (app) => {
-  const pemesanan = require("../controllers/PemesananController copy");
+  const pemesanan = require("../controllers/PemesananController");
   var router = require("express").Router();
 
   // Create new Pemesanan
-  router.post("/", pemesanan.create);
+  router.post("/:id", pemesanan.create);
   // Retrieve all Pemesanans
   router.get("/", pemesanan.findAll);
+  // Checkout Pemesanans
+  router.get("/checkout", pemesanan.findAll);
   // Retrieve single Pemesanan with id
   router.get("/:id", pemesanan.findOne);
   // Delete Pemesanan with id

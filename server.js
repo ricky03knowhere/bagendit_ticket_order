@@ -4,14 +4,37 @@ const cors = require("cors");
 const app = express();
 
 const db = require("./models");
+
+// Session utilities
+const session = require("express-session");
+const cookie = require("cookie-parser");
+const flash = require("connect-flash");
+
 // db.sequelize.sync();
 
-var corsOptions = {
-  origin: "http://localhost:8081",
-};
+// <<--- Third-praty middleware Start --->>
+app.use(
+  session({
+    resave: true,
+    secret: "secret",
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 6000,
+    },
+  })
+  );
+  
+  app.use(cookie("secret"));
+  app.use(flash());
+  
+  var corsOptions = {
+    origin: "http://localhost:8081",
+  };
 
-app.use(cors(corsOptions));
-
+  app.use(cors(corsOptions));
+// <<--- Third-praty middleware End --->>
+  
+// <<--- Buit-in middleware Start --->>
 // parse requests of content-type - application/json
 app.use(express.json());
 
@@ -20,7 +43,10 @@ app.use(
   express.urlencoded({
     extended: true,
   })
-);
+  );
+  // <<--- Buit-in middleware End --->>
+  
+
 
 // simple route
 app.get("/", (req, res) => {
