@@ -1,3 +1,9 @@
+const {
+  getDataById,
+  getDataByConds,
+  createData,
+  updateData,
+} = require("../interfaces/PemesananInterface");
 const db = require("../models");
 
 const { getRandomNumber } = require("../utils/getRandomInt");
@@ -10,52 +16,32 @@ const Op = db.Sequelize.Op;
 
 // Create and Save new Pemesanan
 exports.create = async (req, res) => {
+  // Get Ticket Id
   const id = req.params.id;
-
-  // Get ticket by id
-  const tiket = await Tiket.findByPk(id)
-    .then((data) => data)
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send({
-        message: "Error retrieving Tiket with id=" + id,
-      });
-    });
-
-  const userId = "48595390";
+  // Get Ticket by Id
+  const tiket = await getDataById(Tiket, id, res);
+  // Get User Id
+  const userId = "3492835";
 
   // Ticket stock validation
   if (req.body.jumlah_tiket > tiket.dataValues.stok) {
     console.error("Your order is out of stock");
     res.flash("alert-notif", "Your order is out of stock");
-    res.redirect("/" + id);
+    return res.redirect("/" + id);
   } else if (req.body.jumlah_tiket <= 0) {
     console.error("The order cannot be null");
     res.flash("alert-notif", "The order cannot be null");
-    res.redirect("/" + id);
+    return res.redirect("/" + id);
   }
 
-  //Check order eather exist or not
+  //Check Order eather exist or not
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
   );
-  var condition = { user_id: userId, status: enumValues };
+  let condition = { user_id: userId, status: enumValues };
+  const orderCheck = await getDataByConds(Pemesanan, condition, res);
 
-  const orderCheck = await Pemesanan.findOne({
-    where: condition,
-  })
-    .then((data) => {
-      console.log(data + "\n orderCheck");
-      return data;
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Pemesanan.",
-      });
-    });
-
-    
+  let newOrder;
   if (orderCheck === null) {
     let pemesananData = {
       pemesanan_id: getRandomNumber(12),
@@ -64,69 +50,29 @@ exports.create = async (req, res) => {
       tanggal_pesan: new Date(),
       total_harga: 0,
     };
-    await Pemesanan.create(pemesananData)
-      .then((data) => {
-        console.log("Data pemesanan successfully inserted.");
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the Pemesanan.",
-        });
-      });
+
+    createData(Pemesanan, pemesananData, res);
+    newOrder = await getDataByConds(Pemesanan, condition, res);
   }
+  newOrder = await getDataByConds(Pemesanan, condition, res);
 
-  let newOrder = await Pemesanan.findOne({
-    where: condition,
-  })
-    .then((data) => {
-      return data;
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Pemesanan.",
-      });
-    });
+  const detailPemesananConds = {
+    tiket_id: tiket.dataValues.id.toString(),
+    pemesanan_id: newOrder.dataValues.id.toString(),
+  };
 
-  //Check Detail order eather exist or not
-  let detailPemesananCheck = await Detail_pemesanan.findOne({
-    where: {
-      tiket_id: tiket.dataValues.id.toString(),
-      pemesanan_id: newOrder.dataValues.id.toString(),
-    },
-  })
-    .then((data) => {
-      return data;
-    })
-    .catch((err) => {
-      console.log(err.message);
-      res.status(500).send({
-        message:
-          err.message + " detailPemesanan errors" ||
-          "Some error occurred while retrieving Pemesanan.",
-      });
-    });
+  //Check Detail_order eather exist or not
+  let detailPemesananCheck = await getDataByConds(
+    Detail_pemesanan,
+    detailPemesananConds
+  );
 
-  var jenisTiket = await Jenis_tiket.findOne({
-    where: { id: tiket.dataValues.jenis_tiket_id },
-  })
-    .then((data) => {
-      return data;
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message + " jenis tiket errors" ||
-          "Some error occurred while retrieving Pemesanan.",
-      });
-    });
+  var jenisTiket = await getDataByConds(Jenis_tiket, {
+    id: tiket.dataValues.jenis_tiket_id,
+  });
 
-    
   if (detailPemesananCheck === null) {
-    
     //Store Detail_order data
-
     let detailPemesanan = {
       detail_pemesanan_id: getRandomNumber(8),
       pemesanan_id: newOrder.dataValues.id,
@@ -136,33 +82,15 @@ exports.create = async (req, res) => {
       total_harga: jenisTiket.dataValues.harga * req.body.jumlah_tiket,
     };
 
-    Detail_pemesanan.create(detailPemesanan)
-      .then((data) => {
-        console.log("Data detail_pemesanan successfully inserted.");
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the User.",
-        });
-      });
+    createData(Detail_pemesanan, detailPemesanan, res);
   } else {
-    let detailPemesanan = await Detail_pemesanan.findOne({
-      where: {
-        tiket_id: tiket.dataValues.id.toString(),
-        pemesanan_id: newOrder.dataValues.id.toString(),
-      },
-    })
-      .then((data) => {
-        return data;
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving Pemesanan.",
-        });
-      });
+    //Update Detail_order data
+    let detailPemesanan = await getDataByConds(
+      Detail_pemesanan,
+      detailPemesananConds
+    );
 
+    // Add current jumlah_tiket to existing jumlah_tiket
     detailPemesanan.dataValues.jumlah_tiket += req.body.jumlah_tiket;
 
     //Current Price
@@ -172,24 +100,17 @@ exports.create = async (req, res) => {
     // Add current price to existing price
     detailPemesanan.dataValues.total_harga += newDetailOrderPrice;
 
-    await Detail_pemesanan.update(detailPemesanan.dataValues, {
-      where: { id: detailPemesanan.dataValues.id },
-    }).then((data) => data);
-    // res.send("ticket sucessufully added.");
+    updateData(Detail_pemesanan, detailPemesanan, res);
   }
-
   //Update Total price of orders
-  let pemesanan = await Pemesanan.findOne({
-    where: condition,
-  }).then((data) => data);
+  let pemesanan = await getDataByConds(Pemesanan, condition, res);
 
-  pemesanan.dataValues.total_harga += jenisTiket.dataValues.harga * req.body.jumlah_tiket;
-  await Pemesanan.update(pemesanan.dataValues, {
-    where: { id: pemesanan.dataValues.id },
-  }).then((data) => data);
+  pemesanan.dataValues.total_harga +=
+    jenisTiket.dataValues.harga * req.body.jumlah_tiket;
 
+  updateData(Pemesanan, pemesanan, res);
   // res.flash("notif", "Order is successfully added to cart");
-  res.redirect("checkout");
+  return res.redirect("/checkout");
 };
 
 // Retrieve all pemesanan from the database.
@@ -219,15 +140,9 @@ exports.findAll = (req, res) => {
 // Find single Pemesanan with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Pemesanan.findByPk(id)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error retrieving Pemesanan with id=" + id,
-      });
-    });
+  const data = getDataById(Pemesanan, id, res);
+
+  res.send(data);
 };
 
 // Delete pemesanan by Id
