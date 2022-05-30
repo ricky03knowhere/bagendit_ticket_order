@@ -25,6 +25,20 @@ exports.getDataByConds = (model, condition, res) => {
   return data;
 };
 
+exports.getSomeDataByConds = (model, condition, res) => {
+  const data = model
+    .findAll({ where: condition })
+    .then((data) => data)
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        message: `Error retrieving with condition ${condition}`,
+      });
+    });
+
+  return data;
+};
+
 exports.createData = (model, rawData, res) => {
   model
     .create(rawData)

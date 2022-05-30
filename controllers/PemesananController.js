@@ -3,6 +3,7 @@ const {
   getDataByConds,
   createData,
   updateData,
+  getSomeDataByConds,
 } = require("../interfaces/PemesananInterface");
 const db = require("../models");
 
@@ -113,28 +114,29 @@ exports.create = async (req, res) => {
   return res.redirect("/checkout");
 };
 
-// Retrieve all pemesanan from the database.
-exports.findAll = (req, res) => {
-  const date = req.query.date;
-  var condition = date
-    ? {
-        date: {
-          [Op.iLike]: `%${date}%`,
-        },
-      }
-    : null;
-  Pemesanan.findAll({
-    where: condition,
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving pemesanan.",
-      });
-    });
+// Retrieve all pemesanan by User for checkout.
+exports.checkout = async (req, res) => {
+  const userId = "2434243";
+
+  const enumValues = db.Sequelize.literal(
+    `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
+  );
+  let condition = { user_id: userId, status: enumValues };
+
+  let pemesanan = await getDataByConds(Pemesanan, condition, res);
+  let detailPemesanan = {};
+
+  if (pemesanan !== null) {
+    detailPemesanan = await getSomeDataByConds(
+      Detail_pemesanan,
+      {
+        pemesanan_id: pemesanan.dataValues.id.toString(),
+      },
+      res
+    );
+  }
+
+  return res.send({ pemesanan, detailPemesanan });
 };
 
 // Find single Pemesanan with an id

@@ -4,10 +4,10 @@ module.exports = (app) => {
 
   // Create new Pemesanan
   router.post("/:id", pemesanan.create);
-  // Retrieve all Pemesanans
-  router.get("/", pemesanan.findAll);
   // Checkout Pemesanans
-  router.get("/checkout", pemesanan.findAll);
+  router.get("/checkout", pemesanan.checkout);
+  // Retrieve all Pemesanans
+  // router.get("/", pemesanan.findAll);
   // Retrieve single Pemesanan with id
   router.get("/:id", pemesanan.findOne);
   // Delete Pemesanan with id
