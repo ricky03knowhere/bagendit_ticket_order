@@ -39,7 +39,10 @@ exports.create = async (req, res) => {
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
   );
-  let condition = { user_id: userId, status: enumValues };
+  let condition = {
+    user_id: userId,
+    status: enumValues,
+  };
   const orderCheck = await getDataByConds(Pemesanan, condition, res);
 
   let newOrder;
@@ -121,7 +124,10 @@ exports.checkout = async (req, res) => {
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
   );
-  let condition = { user_id: userId, status: enumValues };
+  let condition = {
+    user_id: userId,
+    status: enumValues,
+  };
 
   let pemesanan = await getDataByConds(Pemesanan, condition, res);
   let detailPemesanan = {};
@@ -136,15 +142,57 @@ exports.checkout = async (req, res) => {
     );
   }
 
-  return res.send({ pemesanan, detailPemesanan });
+  return res.send({
+    pemesanan,
+    detailPemesanan,
+  });
 };
 
-// Find single Pemesanan with an id
-exports.findOne = (req, res) => {
-  const id = req.params.id;
-  const data = getDataById(Pemesanan, id, res);
+// Checkout confirmation
+exports.checkoutConfirmation = async (req, res) => {
+  const user = {
+    id: "3492835",
+    alamat: "Kp.Ciduga RT 02 RW 09",
+    no_telepon: "085861874609",
+  };
 
-  res.send(data);
+  const enumValues = db.Sequelize.literal(
+    `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
+  );
+  let condition = {
+    user_id: user.id,
+    status: enumValues,
+  };
+  let pemesanan = await getDataByConds(Pemesanan, condition, res);
+  console.log(pemesanan);
+  if (user.alamat === null) {
+    // res.flash('alert-notif', 'Please complete your identity first..');
+    return res.redirect("/profile/edit");
+  } else if (user.no_telepon === null) {
+    // res.flash('alert-notif', 'Please complete your identity first..');
+    return res.redirect("/profile/edit");
+  } else {
+    let detailPemesanan = await getSomeDataByConds(Detail_pemesanan, {
+      pemesanan_id: pemesanan.dataValues.id.toString(),
+    });
+    console.log(detailPemesanan);
+
+    detailPemesanan.map(async (pmsn) => {
+      let tiket = await getDataByConds(Tiket, {
+        id: parseInt(pmsn.dataValues.tiket_id),
+      });
+      tiket.dataValues.stok -= pmsn.dataValues.jumlah_tiket;
+
+      updateData(Tiket, tiket, res);
+    });
+  }
+
+  pemesanan.dataValues.status = "complete";
+
+  updateData(Pemesanan, pemesanan, res);
+
+  // res.flash('notif', 'Orders have been confirmed.')
+  return res.redirect("/history/" + pemesanan.dataValues.id);
 };
 
 // Delete pemesanan by Id

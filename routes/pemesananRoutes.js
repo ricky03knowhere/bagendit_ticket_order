@@ -1,17 +1,17 @@
-module.exports = (app) => {
-  const pemesanan = require("../controllers/PemesananController");
-  var router = require("express").Router();
+const router = require("express").Router();
+const {
+  create,
+  checkout,
+  checkoutConfirmation,
+} = require("../controllers/PemesananController");
 
-  // Create new Pemesanan
-  router.post("/:id", pemesanan.create);
-  // Checkout Pemesanans
-  router.get("/checkout", pemesanan.checkout);
-  // Retrieve all Pemesanans
-  // router.get("/", pemesanan.findAll);
-  // Retrieve single Pemesanan with id
-  router.get("/:id", pemesanan.findOne);
-  // Delete Pemesanan with id
-  router.delete("/:id", pemesanan.delete);
+// Create new Pemesanan
+router.post("/:id", create);
+// Checkout Pemesanans
+router.get("/checkout", checkout);
+// Checkout confirmation Pemesanans
+router.get("/checkout/confirm", checkoutConfirmation);
 
-  app.use("/api/pemesanan", router);
+module.exports = {
+  routes: router,
 };

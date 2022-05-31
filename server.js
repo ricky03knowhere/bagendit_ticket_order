@@ -9,6 +9,7 @@ const db = require("./models");
 const session = require("express-session");
 const cookie = require("cookie-parser");
 const flash = require("connect-flash");
+const { pemesananRoutes, historyRoutes } = require("./routes");
 
 // db.sequelize.sync();
 
@@ -22,18 +23,18 @@ app.use(
       maxAge: 6000,
     },
   })
-  );
-  
-  app.use(cookie("secret"));
-  app.use(flash());
-  
-  var corsOptions = {
-    origin: "http://localhost:8081",
-  };
+);
 
-  app.use(cors(corsOptions));
+app.use(cookie("secret"));
+app.use(flash());
+
+var corsOptions = {
+  origin: "http://localhost:8081",
+};
+
+app.use(cors(corsOptions));
 // <<--- Third-praty middleware End --->>
-  
+
 // <<--- Buit-in middleware Start --->>
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -43,10 +44,8 @@ app.use(
   express.urlencoded({
     extended: true,
   })
-  );
-  // <<--- Buit-in middleware End --->>
-  
-
+);
+// <<--- Buit-in middleware End --->>
 
 // simple route
 app.get("/", (req, res) => {
@@ -55,8 +54,8 @@ app.get("/", (req, res) => {
   });
 });
 
-require("./routes/userRoutes")(app);
-require("./routes/pemesananRoutes")(app);
+app.use("/api/pemesanan", pemesananRoutes.routes);
+app.use("/api/pemesanan/history", historyRoutes.routes);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
