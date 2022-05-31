@@ -52,10 +52,23 @@ exports.createData = (model, rawData, res) => {
 
 exports.updateData = (model, newData, res) => {
   model
-    .update(newData.dataValues, {
-      where: { id: newData.dataValues.id },
+    .update(newData, {
+      where: { id: newData.id },
     })
     .then((data) => console.log(`Data successfully updated.`))
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while updating data.",
+      });
+    });
+};
+
+exports.deleteData = (model, id, res) => {
+  model
+    .destroy({
+      where: { id: id },
+    })
+    .then((data) => console.log(`Data successfully deleted.`))
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while updating data.",

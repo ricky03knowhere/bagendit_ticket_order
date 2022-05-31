@@ -4,6 +4,7 @@ const {
   createData,
   updateData,
   getSomeDataByConds,
+  deleteData,
 } = require("../interfaces/PemesananInterface");
 const db = require("../models");
 
@@ -13,26 +14,34 @@ const Pemesanan = db.Pemesanan;
 const Detail_pemesanan = db.Detail_pemesanan;
 const Tiket = db.Tiket;
 const Jenis_tiket = db.Jenis_tiket;
-const Op = db.Sequelize.Op;
+
+// Get ticket
+exports.index = async (req, res) => {
+  const id = req.params.id;
+
+  const { dataValues: tiket } = await getDataByConds(Tiket, { id: id }, res);
+
+  res.send(tiket);
+};
 
 // Create and Save new Pemesanan
 exports.create = async (req, res) => {
   // Get Ticket Id
   const id = req.params.id;
   // Get Ticket by Id
-  const tiket = await getDataById(Tiket, id, res);
+  const { dataValues: tiket } = await getDataById(Tiket, id, res);
   // Get User Id
-  const userId = "3492835";
+  const userId = "8329892";
 
   // Ticket stock validation
-  if (req.body.jumlah_tiket > tiket.dataValues.stok) {
+  if (req.body.jumlah_tiket > tiket.stok) {
     console.error("Your order is out of stock");
-    res.flash("alert-notif", "Your order is out of stock");
-    return res.redirect("/" + id);
+    // res.flash("alert-notif", "Your order is out of stock");
+    return res.redirect("/api/pemesanan/" + id);
   } else if (req.body.jumlah_tiket <= 0) {
     console.error("The order cannot be null");
-    res.flash("alert-notif", "The order cannot be null");
-    return res.redirect("/" + id);
+    // res.flash("alert-notif", "The order cannot be null");
+    return res.redirect("/api/pemesanan/" + id);
   }
 
   //Check Order eather exist or not
@@ -45,7 +54,7 @@ exports.create = async (req, res) => {
   };
   const orderCheck = await getDataByConds(Pemesanan, condition, res);
 
-  let newOrder;
+  let newOrder = {};
   if (orderCheck === null) {
     let pemesananData = {
       pemesanan_id: getRandomNumber(12),
@@ -56,13 +65,18 @@ exports.create = async (req, res) => {
     };
 
     createData(Pemesanan, pemesananData, res);
-    newOrder = await getDataByConds(Pemesanan, condition, res);
+
+    ({ dataValues: newOrder } = await getDataByConds(
+      Pemesanan,
+      condition,
+      res
+    ));
   }
-  newOrder = await getDataByConds(Pemesanan, condition, res);
+  ({ dataValues: newOrder } = await getDataByConds(Pemesanan, condition, res));
 
   const detailPemesananConds = {
-    tiket_id: tiket.dataValues.id.toString(),
-    pemesanan_id: newOrder.dataValues.id.toString(),
+    tiket_id: tiket.id.toString(),
+    pemesanan_id: newOrder.id.toString(),
   };
 
   //Check Detail_order eather exist or not
@@ -71,55 +85,57 @@ exports.create = async (req, res) => {
     detailPemesananConds
   );
 
-  var jenisTiket = await getDataByConds(Jenis_tiket, {
-    id: tiket.dataValues.jenis_tiket_id,
+  var { dataValues: jenisTiket } = await getDataByConds(Jenis_tiket, {
+    id: tiket.jenis_tiket_id,
   });
 
   if (detailPemesananCheck === null) {
     //Store Detail_order data
     let detailPemesanan = {
       detail_pemesanan_id: getRandomNumber(8),
-      pemesanan_id: newOrder.dataValues.id,
-      tiket_id: tiket.dataValues.id,
+      pemesanan_id: newOrder.id,
+      tiket_id: tiket.id,
       tanggal_wisata: new Date(),
       jumlah_tiket: req.body.jumlah_tiket,
-      total_harga: jenisTiket.dataValues.harga * req.body.jumlah_tiket,
+      total_harga: jenisTiket.harga * req.body.jumlah_tiket,
     };
 
     createData(Detail_pemesanan, detailPemesanan, res);
   } else {
     //Update Detail_order data
-    let detailPemesanan = await getDataByConds(
+    let { dataValues: detailPemesanan } = await getDataByConds(
       Detail_pemesanan,
       detailPemesananConds
     );
 
     // Add current jumlah_tiket to existing jumlah_tiket
-    detailPemesanan.dataValues.jumlah_tiket += req.body.jumlah_tiket;
+    detailPemesanan.jumlah_tiket += req.body.jumlah_tiket;
 
     //Current Price
-    let newDetailOrderPrice =
-      jenisTiket.dataValues.harga * req.body.jumlah_tiket;
+    let newDetailOrderPrice = jenisTiket.harga * req.body.jumlah_tiket;
 
     // Add current price to existing price
-    detailPemesanan.dataValues.total_harga += newDetailOrderPrice;
+    detailPemesanan.total_harga += newDetailOrderPrice;
 
     updateData(Detail_pemesanan, detailPemesanan, res);
   }
   //Update Total price of orders
-  let pemesanan = await getDataByConds(Pemesanan, condition, res);
+  let { dataValues: pemesanan } = await getDataByConds(
+    Pemesanan,
+    condition,
+    res
+  );
 
-  pemesanan.dataValues.total_harga +=
-    jenisTiket.dataValues.harga * req.body.jumlah_tiket;
+  pemesanan.total_harga += jenisTiket.harga * req.body.jumlah_tiket;
 
   updateData(Pemesanan, pemesanan, res);
   // res.flash("notif", "Order is successfully added to cart");
-  return res.redirect("/checkout");
+  return res.redirect("/api/pemesanan/checkout");
 };
 
 // Retrieve all pemesanan by User for checkout.
 exports.checkout = async (req, res) => {
-  const userId = "2434243";
+  const userId = "8329892";
 
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
@@ -136,7 +152,7 @@ exports.checkout = async (req, res) => {
     detailPemesanan = await getSomeDataByConds(
       Detail_pemesanan,
       {
-        pemesanan_id: pemesanan.dataValues.id.toString(),
+        pemesanan_id: pemesanan.id.toString(),
       },
       res
     );
@@ -151,7 +167,7 @@ exports.checkout = async (req, res) => {
 // Checkout confirmation
 exports.checkoutConfirmation = async (req, res) => {
   const user = {
-    id: "3492835",
+    id: "8329892",
     alamat: "Kp.Ciduga RT 02 RW 09",
     no_telepon: "085861874609",
   };
@@ -163,60 +179,71 @@ exports.checkoutConfirmation = async (req, res) => {
     user_id: user.id,
     status: enumValues,
   };
-  let pemesanan = await getDataByConds(Pemesanan, condition, res);
+  let { dataValues: pemesanan } = await getDataByConds(
+    Pemesanan,
+    condition,
+    res
+  );
   console.log(pemesanan);
   if (user.alamat === null) {
     // res.flash('alert-notif', 'Please complete your identity first..');
-    return res.redirect("/profile/edit");
+    return res.redirect("/api/profile/edit");
   } else if (user.no_telepon === null) {
     // res.flash('alert-notif', 'Please complete your identity first..');
-    return res.redirect("/profile/edit");
+    return res.redirect("/api/profile/edit");
   } else {
     let detailPemesanan = await getSomeDataByConds(Detail_pemesanan, {
-      pemesanan_id: pemesanan.dataValues.id.toString(),
+      pemesanan_id: pemesanan.id.toString(),
     });
     console.log(detailPemesanan);
 
-    detailPemesanan.map(async (pmsn) => {
-      let tiket = await getDataByConds(Tiket, {
-        id: parseInt(pmsn.dataValues.tiket_id),
+    detailPemesanan.map(async ({ dataValues: pmsn }) => {
+      let { dataValues: tiket } = await getDataByConds(Tiket, {
+        id: parseInt(pmsn.tiket_id),
       });
-      tiket.dataValues.stok -= pmsn.dataValues.jumlah_tiket;
+      tiket.stok -= pmsn.jumlah_tiket;
 
       updateData(Tiket, tiket, res);
     });
   }
 
-  pemesanan.dataValues.status = "complete";
+  pemesanan.status = "complete";
 
   updateData(Pemesanan, pemesanan, res);
 
   // res.flash('notif', 'Orders have been confirmed.')
-  return res.redirect("/history/" + pemesanan.dataValues.id);
+  return res.redirect("/api/pemesanan/history/" + pemesanan.id);
 };
 
-// Delete pemesanan by Id
-exports.delete = (req, res) => {
-  const id = req.params.id;
-  Pemesanan.destroy({
-    where: {
-      id: id,
-    },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Pemesanan was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Pemesanan with id=${id}. Maybe Pemesanan was not found!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not delete Pemesanan with id=" + id,
-      });
-    });
+// Remove pemesanan
+exports.remove = async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  let { dataValues: detailPemesanan } = await getDataByConds(
+    Detail_pemesanan,
+    { id: id },
+    res
+  );
+  console.log(detailPemesanan);
+  let { dataValues: pemesanan } = await getDataByConds(
+    Pemesanan,
+    { id: parseInt(detailPemesanan.pemesanan_id) },
+    res
+  );
+
+  pemesanan.total_harga -= detailPemesanan.total_harga;
+  console.log(pemesanan);
+  updateData(Pemesanan, pemesanan, res);
+  deleteData(Detail_pemesanan, detailPemesanan.id, res);
+
+  let { dataValues: detailPemesananCheck } = await getDataByConds(
+    Detail_pemesanan,
+    { pemesanan_id: detailPemesanan.pemesanan_id },
+    res
+  );
+  if (detailPemesananCheck === null) {
+    deleteData(Pemesanan, pemesanan.id, res);
+  }
+  // res.flash('notif', 'Pemesanan telah dibatalkan');
+  return res.redirect("/api/pemesanan/checkout");
 };

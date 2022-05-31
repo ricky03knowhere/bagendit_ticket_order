@@ -54,8 +54,8 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/pemesanan", pemesananRoutes.routes);
 app.use("/api/pemesanan/history", historyRoutes.routes);
+app.use("/api/pemesanan", pemesananRoutes.routes);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
