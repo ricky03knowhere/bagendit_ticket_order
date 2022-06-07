@@ -19,7 +19,7 @@ const Jenis_tiket = db.Jenis_tiket;
 exports.index = async (req, res) => {
   const id = req.params.id;
 
-  const { dataValues: tiket } = await getDataByConds(Tiket, { id: id }, res);
+  const tiket = await getDataByConds(Tiket, { id: id }, res);
 
   res.send(tiket);
 };
@@ -29,9 +29,9 @@ exports.create = async (req, res) => {
   // Get Ticket Id
   const id = req.params.id;
   // Get Ticket by Id
-  const { dataValues: tiket } = await getDataById(Tiket, id, res);
+  const  tiket  = await getDataById(Tiket, id, res);
   // Get User Id
-  const userId = "8329892";
+  const userId = req.user.user_id;
 
   // Ticket stock validation
   if (req.body.jumlah_tiket > tiket.stok) {
@@ -66,13 +66,9 @@ exports.create = async (req, res) => {
 
     createData(Pemesanan, pemesananData, res);
 
-    ({ dataValues: newOrder } = await getDataByConds(
-      Pemesanan,
-      condition,
-      res
-    ));
+    newOrder = await getDataByConds(Pemesanan, condition, res);
   }
-  ({ dataValues: newOrder } = await getDataByConds(Pemesanan, condition, res));
+  newOrder = await getDataByConds(Pemesanan, condition, res);
 
   const detailPemesananConds = {
     tiket_id: tiket.id.toString(),
@@ -85,7 +81,7 @@ exports.create = async (req, res) => {
     detailPemesananConds
   );
 
-  var { dataValues: jenisTiket } = await getDataByConds(Jenis_tiket, {
+  var jenisTiket = await getDataByConds(Jenis_tiket, {
     id: tiket.jenis_tiket_id,
   });
 
@@ -103,7 +99,7 @@ exports.create = async (req, res) => {
     createData(Detail_pemesanan, detailPemesanan, res);
   } else {
     //Update Detail_order data
-    let { dataValues: detailPemesanan } = await getDataByConds(
+    let detailPemesanan = await getDataByConds(
       Detail_pemesanan,
       detailPemesananConds
     );
@@ -120,14 +116,12 @@ exports.create = async (req, res) => {
     updateData(Detail_pemesanan, detailPemesanan, res);
   }
   //Update Total price of orders
-  let { dataValues: pemesanan } = await getDataByConds(
-    Pemesanan,
-    condition,
-    res
-  );
+  let pemesanan = await getDataByConds(Pemesanan, condition, res);
 
-  pemesanan.total_harga += jenisTiket.harga * req.body.jumlah_tiket;
+  let newOrderPrice = jenisTiket.harga * req.body.jumlah_tiket;
+  pemesanan.total_harga += newOrderPrice;
 
+  console.log(pemesanan.total_harga);
   updateData(Pemesanan, pemesanan, res);
   // res.flash("notif", "Order is successfully added to cart");
   return res.redirect("/api/pemesanan/checkout");
@@ -135,7 +129,7 @@ exports.create = async (req, res) => {
 
 // Retrieve all pemesanan by User for checkout.
 exports.checkout = async (req, res) => {
-  const userId = "8329892";
+  const userId = req.user.user_id;
 
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
@@ -166,24 +160,16 @@ exports.checkout = async (req, res) => {
 
 // Checkout confirmation
 exports.checkoutConfirmation = async (req, res) => {
-  const user = {
-    id: "8329892",
-    alamat: "Kp.Ciduga RT 02 RW 09",
-    no_telepon: "085861874609",
-  };
+  const user = req.user;
 
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
   );
   let condition = {
-    user_id: user.id,
+    user_id: user.user_id,
     status: enumValues,
   };
-  let { dataValues: pemesanan } = await getDataByConds(
-    Pemesanan,
-    condition,
-    res
-  );
+  let pemesanan = await getDataByConds(Pemesanan, condition, res);
   console.log(pemesanan);
   if (user.alamat === null) {
     // res.flash('alert-notif', 'Please complete your identity first..');
@@ -197,8 +183,8 @@ exports.checkoutConfirmation = async (req, res) => {
     });
     console.log(detailPemesanan);
 
-    detailPemesanan.map(async ({ dataValues: pmsn }) => {
-      let { dataValues: tiket } = await getDataByConds(Tiket, {
+    detailPemesanan.map(async (pmsn) => {
+      let tiket = await getDataByConds(Tiket, {
         id: parseInt(pmsn.tiket_id),
       });
       tiket.stok -= pmsn.jumlah_tiket;
@@ -219,13 +205,9 @@ exports.checkoutConfirmation = async (req, res) => {
 exports.remove = async (req, res) => {
   const id = parseInt(req.params.id);
 
-  let { dataValues: detailPemesanan } = await getDataByConds(
-    Detail_pemesanan,
-    { id: id },
-    res
-  );
+  let detailPemesanan = await getDataByConds(Detail_pemesanan, { id: id }, res);
   console.log(detailPemesanan);
-  let { dataValues: pemesanan } = await getDataByConds(
+  let pemesanan = await getDataByConds(
     Pemesanan,
     { id: parseInt(detailPemesanan.pemesanan_id) },
     res
@@ -236,7 +218,7 @@ exports.remove = async (req, res) => {
   updateData(Pemesanan, pemesanan, res);
   deleteData(Detail_pemesanan, detailPemesanan.id, res);
 
-  let { dataValues: detailPemesananCheck } = await getDataByConds(
+  let detailPemesananCheck = await getDataByConds(
     Detail_pemesanan,
     { pemesanan_id: detailPemesanan.pemesanan_id },
     res

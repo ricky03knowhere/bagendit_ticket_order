@@ -52,7 +52,7 @@ exports.createData = (model, rawData, res) => {
 
 exports.updateData = (model, newData, res) => {
   model
-    .update(newData, {
+    .update(newData.dataValues, {
       where: { id: newData.id },
     })
     .then((data) => console.log(`Data successfully updated.`))

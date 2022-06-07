@@ -10,6 +10,7 @@ const session = require("express-session");
 const cookie = require("cookie-parser");
 const flash = require("connect-flash");
 const { pemesananRoutes, historyRoutes } = require("./routes");
+const authRoutes = require("./routes/authRoutes");
 
 // db.sequelize.sync();
 
@@ -54,6 +55,7 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/api/login", authRoutes.routes);
 app.use("/api/pemesanan/history", historyRoutes.routes);
 app.use("/api/pemesanan", pemesananRoutes.routes);
 

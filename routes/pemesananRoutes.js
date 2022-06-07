@@ -6,17 +6,18 @@ const {
   checkoutConfirmation,
   remove,
 } = require("../controllers/PemesananController");
+const { authValidation } = require("../middleware/authValidation");
 
 // Create new Pemesanan
-router.post("/:id", create);
+router.post("/:id", authValidation, create);
 // Checkout Pemesanans
-router.get("/checkout", checkout);
+router.get("/checkout", authValidation, checkout);
 // Checkout confirmation Pemesanans
-router.get("/checkout/confirm", checkoutConfirmation);
+router.get("/checkout/confirm", authValidation, checkoutConfirmation);
 // Get Tiket to Pemesanan
-router.get("/:id", index);
+router.get("/:id", authValidation, index);
 // Remove Pemesanan
-router.delete("/remove/:id", remove);
+router.delete("/remove/:id", authValidation, remove);
 
 module.exports = {
   routes: router,
