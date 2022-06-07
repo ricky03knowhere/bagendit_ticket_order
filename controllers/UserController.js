@@ -1,111 +1,39 @@
+const {
+  getSomeDataByConds,
+  getDataById,
+  updateData,
+  deleteData,
+} = require("../interfaces/RepositoryInterface");
 const db = require("../models");
 const User = db.User;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new User
-exports.create = (req, res) => {
-  // Create a User
-  const user = req.body;
-console.log(user);
-  // Save User in the database
-  User.create(user)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the User.",
-      });
-    });
-};
-
 // Retrieve all user from the database.
-exports.findAll = (req, res) => {
-  const email = req.query.email;
-  var condition = email
-    ? {
-        email: {
-          [Op.iLike]: `%${email}%`,
-        },
-      }
-    : null;
-  User.findAll({
-    where: condition,
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving user.",
-      });
-    });
+exports.findAll = async (req, res) => {
+  const users = await getSomeDataByConds(User, {}, res);
+  return res.send(users);
 };
 
 // Find a single User with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   const id = req.params.id;
-  User.findByPk(id)
-    .then((data) => {
-      res.json(data);
-      console.log(data);
-    })
-    .catch((err) => {
-      console.log(err)
-      res.status(500).send({
-        message: "Error retrieving User with id=" + id,
-      });
-    });
+  const user = await getDataById(User, id, res);
+  return res.send(user);
 };
 
 // Update a user by Id
 exports.update = (req, res) => {
   const id = req.params.id;
-  User.update(req.body, {
-    where: {
-      id: id,
-    },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "User was updated successfully.",
-        });
-      } else {
-        res.send({
-          message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error updating User with id=" + id,
-      });
-    });
+  let newData = { id, dataValues: req.body };
+  updateData(User, newData, res);
+  // res.flush('notif', 'Your profile successfully updated...');
+  return res.redirect("/api/user/" + id);
 };
 
 // Delete a user by Id
 exports.delete = (req, res) => {
   const id = req.params.id;
-  User.destroy({
-    where: {
-      id: id,
-    },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "User was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete User with id=${id}. Maybe User was not found!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not delete User with id=" + id,
-      });
-    });
+  deleteData(User, id, res);
+  // res.flush('notif', 'User data successfully deleted...');
+  return res.redirect("/api/user/");
 };

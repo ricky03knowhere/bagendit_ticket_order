@@ -1,8 +1,13 @@
-const { getDataByConds } = require("../interfaces/PemesananInterface");
+const {
+  getDataByConds,
+  createData,
+} = require("../interfaces/RepositoryInterface");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 // const dotenv = require('dotenv')
 const db = require("../models");
+const { faker } = require("@faker-js/faker");
+const { getRandomNumber } = require("../utils/getRandomInt");
 const User = db.User;
 
 exports.login = async (req, res) => {
@@ -32,4 +37,16 @@ exports.login = async (req, res) => {
   );
 
   return res.header("auth-token", token).send("Login success.");
+};
+
+exports.register = (req, res) => {
+  let userData = {
+    ...req.body,
+    user_id: getRandomNumber(8).toString(),
+    photo: faker.internet.avatar(),
+  };
+  createData(User, userData, res);
+
+  // res.flush('notif', 'User data successfully registered...');
+  return res.redirect("/api/user/");
 };

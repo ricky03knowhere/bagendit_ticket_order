@@ -1,7 +1,7 @@
 const {
   getDataByConds,
   getSomeDataByConds,
-} = require("../interfaces/PemesananInterface");
+} = require("../interfaces/RepositoryInterface");
 const { sequelize } = require("../models");
 
 const db = require("../models");

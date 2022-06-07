@@ -57,6 +57,7 @@ exports.updateData = (model, newData, res) => {
     })
     .then((data) => console.log(`Data successfully updated.`))
     .catch((err) => {
+      console.log(err);
       res.status(500).send({
         message: err.message || "Some error occurred while updating data.",
       });

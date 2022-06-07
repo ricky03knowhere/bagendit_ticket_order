@@ -11,6 +11,8 @@ const cookie = require("cookie-parser");
 const flash = require("connect-flash");
 const { pemesananRoutes, historyRoutes } = require("./routes");
 const authRoutes = require("./routes/authRoutes");
+const homeRoutes = require("./routes/homeRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 // db.sequelize.sync();
 
@@ -55,7 +57,9 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/login", authRoutes.routes);
+app.use("/api/home", homeRoutes.routes);
+app.use("/api/user", userRoutes.routes);
+app.use("/api/auth", authRoutes.routes);
 app.use("/api/pemesanan/history", historyRoutes.routes);
 app.use("/api/pemesanan", pemesananRoutes.routes);
 

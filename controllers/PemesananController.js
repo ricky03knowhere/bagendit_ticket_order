@@ -5,7 +5,7 @@ const {
   updateData,
   getSomeDataByConds,
   deleteData,
-} = require("../interfaces/PemesananInterface");
+} = require("../interfaces/RepositoryInterface");
 const db = require("../models");
 
 const { getRandomNumber } = require("../utils/getRandomInt");
