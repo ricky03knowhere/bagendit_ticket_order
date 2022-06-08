@@ -6,7 +6,6 @@ const {
 } = require("../interfaces/RepositoryInterface");
 const db = require("../models");
 const User = db.User;
-const Op = db.Sequelize.Op;
 
 // Retrieve all user from the database.
 exports.findAll = async (req, res) => {

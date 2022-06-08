@@ -9,10 +9,15 @@ const db = require("./models");
 const session = require("express-session");
 const cookie = require("cookie-parser");
 const flash = require("connect-flash");
-const { pemesananRoutes, historyRoutes } = require("./routes");
-const authRoutes = require("./routes/authRoutes");
-const homeRoutes = require("./routes/homeRoutes");
-const userRoutes = require("./routes/userRoutes");
+const {
+  pemesananRoutes,
+  historyRoutes,
+  homeRoutes,
+  userRoutes,
+  authRoutes,
+  transactionRoutes,
+  resourceRoutes,
+} = require("./routes");
 
 // db.sequelize.sync();
 
@@ -62,6 +67,9 @@ app.use("/api/user", userRoutes.routes);
 app.use("/api/auth", authRoutes.routes);
 app.use("/api/pemesanan/history", historyRoutes.routes);
 app.use("/api/pemesanan", pemesananRoutes.routes);
+app.use("/api/transaction", transactionRoutes.routes);
+
+app.use("/api/resource", resourceRoutes.routes);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

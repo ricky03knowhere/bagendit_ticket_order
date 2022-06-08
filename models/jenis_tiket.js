@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Jenis_tiket.hasMany(models.Tiket, { as: "tiket_type" });
+      Jenis_tiket.hasMany(models.Tiket, { as: "jenis_tiket" });
       //   Jenis_tiket.belongsTo(models.Objek_wisata, {
       //     foreignKey: "id_obj_wisata",
       //     through: "objek_wisata",

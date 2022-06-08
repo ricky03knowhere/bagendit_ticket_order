@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.belongsTo(models.Pos_kode);
 
-      User.hasMany(models.Pemesanan, { as: "pemesanans" });
+      User.hasMany(models.Pemesanan);
     }
   }
   User.init(
