@@ -10,18 +10,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Pemesanan.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
-      Pemesanan.belongsTo(models.Pembayaran, {
-        foreignKey: "pembayaran_id",
-        as: "pembayaran",
-      });
+      Pemesanan.belongsTo(models.Pembayaran);
       Pemesanan.hasMany(models.Detail_pemesanan);
     }
   }
   Pemesanan.init(
     {
       pemesanan_id: DataTypes.STRING,
-      user_id: DataTypes.STRING,
-      pembayaran_id: DataTypes.STRING,
+      user_id: DataTypes.INTEGER,
+      pembayaran_id: DataTypes.INTEGER,
       tanggal_pesan: DataTypes.DATE,
       total_harga: DataTypes.INTEGER,
       status: DataTypes.ENUM("pending", "complete", "cancelled"),

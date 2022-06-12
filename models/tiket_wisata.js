@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       objek_wisata_id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         references: {
           model: Objek_wisata,
           key: "id",

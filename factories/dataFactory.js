@@ -1,4 +1,9 @@
-const { getRandomNumber, getRandRangeNum } = require("../utils/getRandomInt");
+const db = require("../models");
+const {
+  getRandomNumber,
+  getRandRangeNum,
+  getRandDate,
+} = require("../utils/getRandomDataVal");
 const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
 
@@ -9,7 +14,7 @@ faker.locale = "id_ID";
 exports.userFactory = (size) =>
   [...Array(size)].map((user) => ({
     user_id: getRandomNumber(8).toString(),
-    pos_kode_id: '90029',
+    pos_kode_id: getRandRangeNum(1, 15),
     email: faker.internet.email(),
     password: bcrypt.hashSync("admin", 10),
     is_admin: 1,
@@ -21,15 +26,16 @@ exports.userFactory = (size) =>
     updated_at: new Date(),
   }));
 
-exports.posKodeFactory = [...Array(3)].map((kode, i) => ({
-  pos_kode_id: faker.address.zipCode(),
-  provinsi: faker.address.state(),
-  kota: faker.address.cityName(),
-  kecamatan: faker.address.cityName(),
-  desa: faker.address.streetName(),
-  created_at: new Date(),
-  updated_at: new Date(),
-}));
+exports.posKodeFactory = (size) =>
+  [...Array(size)].map((kode, i) => ({
+    pos_kode_id: faker.address.zipCode(),
+    provinsi: faker.address.state(),
+    kota: faker.address.cityName(),
+    kecamatan: faker.address.cityName(),
+    desa: faker.address.streetName(),
+    created_at: new Date(),
+    updated_at: new Date(),
+  }));
 
 exports.loketFactory = [...Array(3)].map((loket, i) => ({
   loket_id: i + 1,
@@ -106,136 +112,36 @@ exports.objWisataFactory = objek_wisata.map((wisata, i) => ({
   updated_at: new Date(),
 }));
 
-exports.tiketWisataFactory = [
-  {
-    jenis_tiket_id: 1,
-    objek_wisata_id: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 1,
-    objek_wisata_id: 2,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 1,
-    objek_wisata_id: 3,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 1,
-    objek_wisata_id: 4,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-
-  {
-    jenis_tiket_id: 2,
-    objek_wisata_id: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 2,
-    objek_wisata_id: 2,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 2,
-    objek_wisata_id: 3,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 2,
-    objek_wisata_id: 4,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 2,
-    objek_wisata_id: 5,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 2,
-    objek_wisata_id: 6,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 2,
-    objek_wisata_id: 7,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 1,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 2,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 3,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 4,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 5,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 6,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 7,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 8,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 9,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    jenis_tiket_id: 3,
-    objek_wisata_id: 10,
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
+const tiketWisata = [
+  [1, 1],
+  [1, 2],
+  [1, 3],
+  [1, 4],
+  [2, 1],
+  [2, 2],
+  [2, 3],
+  [2, 4],
+  [2, 5],
+  [2, 6],
+  [2, 7],
+  [3, 1],
+  [3, 2],
+  [3, 3],
+  [3, 4],
+  [3, 5],
+  [3, 6],
+  [3, 7],
+  [3, 8],
+  [3, 9],
+  [3, 10],
 ];
+exports.tiketWisataFactory = tiketWisata.map((item) => ({
+  jenis_tiket_id: item[0],
+  objek_wisata_id: item[1],
+  created_at: new Date(),
+  updated_at: new Date(),
+}));
+
 const jenis_pembayaran = [
   ["bca", "bank", "-B"],
   ["bri", "bank", "-B"],
@@ -254,3 +160,45 @@ exports.jenisPembFactory = jenis_pembayaran.map((item, i) => ({
   created_at: new Date(),
   updated_at: new Date(),
 }));
+
+const pmsEnumValues = db.Sequelize.literal(
+  `"Pemesanan"."status" = 'complete'::"enum_pemesanans_status"`
+);
+exports.pemesananFactory = (size) =>
+  [...Array(size)].map((item) => ({
+    pemesanan_id: getRandomNumber(12),
+    user_id: getRandRangeNum(1, 300),
+    pembayaran_id: getRandRangeNum(1, 500),
+    tanggal_pesan: getRandDate(new Date(2022, 5, 1), new Date()),
+    total_harga: getRandRangeNum(60000, 500000),
+    status: pmsEnumValues,
+    created_at: getRandDate(new Date(2022, 5, 1), new Date()),
+    updated_at: getRandDate(new Date(2022, 5, 1), new Date()),
+  }));
+
+exports.detailPemesananFactory = (size) =>
+  [...Array(size)].map((item) => ({
+    detail_pemesanan_id: getRandomNumber(8),
+    pemesanan_id: getRandRangeNum(1, 500),
+    tiket_id: getRandRangeNum(1, 9),
+    tanggal_wisata: getRandDate(new Date(2022, 05, 01), new Date()),
+    jumlah_tiket: getRandRangeNum(1, 25),
+    total_harga: getRandRangeNum(60000, 300000),
+    created_at: getRandDate(new Date(2022, 05, 01), new Date()),
+    updated_at: getRandDate(new Date(2022, 05, 01), new Date()),
+  }));
+
+const pembEnumValues = db.Sequelize.literal(
+  `"Pembayaran"."status" = 'paid'::"enum_pembayarans_status"`
+);
+exports.pembayaranFactory = (size) =>
+  [...Array(size)].map((item) => ({
+    pembayaran_id: getRandomNumber(12),
+    jenis_pembayaran_id: getRandDate(1, 8),
+    kode_pembayaran: getRandomNumber(3),
+    tanggal_bayar: new Date(),
+    img_barcode: faker.system.commonFileName("jpg"),
+    status: pembEnumValues,
+    created_at: new Date(),
+    updated_at: new Date(),
+  }));

@@ -10,7 +10,7 @@ const Detail_pemesanan = db.Detail_pemesanan;
 
 // History Pemesanan
 exports.index = async (req, res) => {
-  const userId = req.user.user_id;
+  const userId = req.user.id;
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" != 'pending'::"enum_pemesanans_status"`
   );
@@ -29,7 +29,7 @@ exports.index = async (req, res) => {
     if (pemesanan[i] != null) {
       let data = await Detail_pemesanan.findAll({
         where: {
-          pemesanan_id: pemesanan[i].id.toString(),
+          pemesanan_id: pemesanan[i].id,
         },
         attributes: [
           "jumlah_tiket",

@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       objek_wisata_id: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       created_at: {
         allowNull: false,

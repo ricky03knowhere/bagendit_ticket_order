@@ -12,10 +12,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
       user_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       pembayaran_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       tanggal_pesan: {
         type: Sequelize.DATE,

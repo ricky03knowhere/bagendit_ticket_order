@@ -1,3 +1,5 @@
+"use strict";
+
 const { jenisPembFactory } = require("../factories/dataFactory");
 
 module.exports = {

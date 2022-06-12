@@ -12,10 +12,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
       pemesanan_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       tiket_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       tanggal_wisata: {
         type: Sequelize.DATE,

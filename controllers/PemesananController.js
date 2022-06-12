@@ -8,12 +8,13 @@ const {
 } = require("../interfaces/RepositoryInterface");
 const db = require("../models");
 
-const { getRandomNumber } = require("../utils/getRandomInt");
+const { getRandomNumber } = require("../utils/getRandomDataVal");
 
 const Pemesanan = db.Pemesanan;
 const Detail_pemesanan = db.Detail_pemesanan;
 const Tiket = db.Tiket;
 const Jenis_tiket = db.Jenis_tiket;
+const Pembayaran = db.Pembayaran;
 
 // Get ticket
 exports.index = async (req, res) => {
@@ -29,9 +30,9 @@ exports.create = async (req, res) => {
   // Get Ticket Id
   const id = req.params.id;
   // Get Ticket by Id
-  const  tiket  = await getDataById(Tiket, id, res);
+  const tiket = await getDataById(Tiket, id, res);
   // Get User Id
-  const userId = req.user.user_id;
+  const userId = req.user.id;
 
   // Ticket stock validation
   if (req.body.jumlah_tiket > tiket.stok) {
@@ -55,11 +56,23 @@ exports.create = async (req, res) => {
   const orderCheck = await getDataByConds(Pemesanan, condition, res);
 
   let newOrder = {};
+  let newPayment = {};
   if (orderCheck === null) {
+    const { id } = getDataByConds(
+      Pembayaran,
+      { order: "created_at desc" },
+      res
+    );
+
+    let pembayaranData = {
+      pembayaran_id: getRandomNumber(12),
+    };
+
+    createData(Pembayaran, pembayaranData, res);
     let pemesananData = {
       pemesanan_id: getRandomNumber(12),
       user_id: userId,
-      pembayaran_id: getRandomNumber(12),
+      pembayaran_id: id + 1,
       tanggal_pesan: new Date(),
       total_harga: 0,
     };
@@ -71,8 +84,8 @@ exports.create = async (req, res) => {
   newOrder = await getDataByConds(Pemesanan, condition, res);
 
   const detailPemesananConds = {
-    tiket_id: tiket.id.toString(),
-    pemesanan_id: newOrder.id.toString(),
+    tiket_id: tiket.id,
+    pemesanan_id: newOrder.id,
   };
 
   //Check Detail_order eather exist or not
@@ -129,7 +142,7 @@ exports.create = async (req, res) => {
 
 // Retrieve all pemesanan by User for checkout.
 exports.checkout = async (req, res) => {
-  const userId = req.user.user_id;
+  const userId = req.user.id;
 
   const enumValues = db.Sequelize.literal(
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
@@ -146,7 +159,7 @@ exports.checkout = async (req, res) => {
     detailPemesanan = await getSomeDataByConds(
       Detail_pemesanan,
       {
-        pemesanan_id: pemesanan.id.toString(),
+        pemesanan_id: pemesanan.id,
       },
       res
     );
@@ -166,7 +179,7 @@ exports.checkoutConfirmation = async (req, res) => {
     `"Pemesanan"."status" = 'pending'::"enum_pemesanans_status"`
   );
   let condition = {
-    user_id: user.user_id,
+    user_id: user.id,
     status: enumValues,
   };
   let pemesanan = await getDataByConds(Pemesanan, condition, res);
@@ -179,7 +192,7 @@ exports.checkoutConfirmation = async (req, res) => {
     return res.redirect("/api/profile/edit");
   } else {
     let detailPemesanan = await getSomeDataByConds(Detail_pemesanan, {
-      pemesanan_id: pemesanan.id.toString(),
+      pemesanan_id: pemesanan.id,
     });
     console.log(detailPemesanan);
 

@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       jenis_pembayaran_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       kode_pembayaran: {
         type: Sequelize.INTEGER,

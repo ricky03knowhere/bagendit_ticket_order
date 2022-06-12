@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       jenis_tiket_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       nama: {
         type: Sequelize.STRING,
