@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 // const dotenv = require('dotenv')
 const db = require("../models");
 const { faker } = require("@faker-js/faker");
-const { getRandomNumber } = require("../utils/getRandomInt");
+const { getRandomNumber } = require("../utils/getRandomDataVal");
 const User = db.User;
 
 exports.login = async (req, res) => {

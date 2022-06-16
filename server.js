@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const expressEjsLayouts = require("express-ejs-layouts");
 const app = express();
 
 const db = require("./models");
@@ -20,8 +21,12 @@ const {
 } = require("./routes");
 
 // db.sequelize.sync();
+app.set("view engine", "ejs");
+app.set("layout", "layouts/main-layouts");
 
 // <<--- Third-praty middleware Start --->>
+app.use(express.static('public'))
+app.use(expressEjsLayouts);
 app.use(
   session({
     resave: true,
@@ -55,10 +60,17 @@ app.use(
 );
 // <<--- Buit-in middleware End --->>
 
-// simple route
+app.use(express.static("public"));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
 app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to ticket-order application.",
+  res.render("index", {
+    title: "Home",
+    layout: "layouts/main-layouts",
   });
 });
 
