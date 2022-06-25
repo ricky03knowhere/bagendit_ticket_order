@@ -20,7 +20,13 @@ const Pembayaran = db.Pembayaran;
 exports.index = async (req, res) => {
   const id = req.params.id;
 
-  const tiket = await getDataByConds(Tiket, { id: id }, res);
+  const tiket = await getDataByConds(
+    Tiket,
+    {
+      id: id,
+    },
+    res
+  );
 
   res.send(tiket);
 };
@@ -28,21 +34,22 @@ exports.index = async (req, res) => {
 // Create and Save new Pemesanan
 exports.create = async (req, res) => {
   // Get Ticket Id
-  const id = req.params.id;
+  const id = req.body.tiket_id;
   // Get Ticket by Id
   const tiket = await getDataById(Tiket, id, res);
+  console.log(tiket);
   // Get User Id
   const userId = req.user.id;
 
   // Ticket stock validation
   if (req.body.jumlah_tiket > tiket.stok) {
     console.error("Your order is out of stock");
-    // res.flash("alert-notif", "Your order is out of stock");
-    return res.redirect("/api/pemesanan/" + id);
+    req.flash("alertNotif", "Pemesanan melebihi stok tiket");
+    return res.redirect("/api/transaction/order");
   } else if (req.body.jumlah_tiket <= 0) {
     console.error("The order cannot be null");
-    // res.flash("alert-notif", "The order cannot be null");
-    return res.redirect("/api/pemesanan/" + id);
+    req.flash("alertNotif", "Stok invalid");
+    return res.redirect("/api/transaction/order");
   }
 
   //Check Order eather exist or not
@@ -58,11 +65,9 @@ exports.create = async (req, res) => {
   let newOrder = {};
   let newPayment = {};
   if (orderCheck === null) {
-    const { id } = getDataByConds(
-      Pembayaran,
-      { order: "created_at desc" },
-      res
-    );
+    const { id: pembId } = await Pembayaran.findOne({
+      order: [["created_at", "DESC"]],
+    }).then((data) => data);
 
     let pembayaranData = {
       pembayaran_id: getRandomNumber(12),
@@ -72,7 +77,7 @@ exports.create = async (req, res) => {
     let pemesananData = {
       pemesanan_id: getRandomNumber(12),
       user_id: userId,
-      pembayaran_id: id + 1,
+      pembayaran_id: pembId + 1,
       tanggal_pesan: new Date(),
       total_harga: 0,
     };
@@ -136,7 +141,7 @@ exports.create = async (req, res) => {
 
   console.log(pemesanan.total_harga);
   updateData(Pemesanan, pemesanan, res);
-  // res.flash("notif", "Order is successfully added to cart");
+  req.flash("notif", "Order is successfully added to cart");
   return res.redirect("/api/pemesanan/checkout");
 };
 
@@ -156,18 +161,19 @@ exports.checkout = async (req, res) => {
   let detailPemesanan = {};
 
   if (pemesanan !== null) {
-    detailPemesanan = await getSomeDataByConds(
-      Detail_pemesanan,
-      {
-        pemesanan_id: pemesanan.id,
-      },
-      res
-    );
+    detailPemesanan = await Detail_pemesanan.findAll({
+      where: { pemesanan_id: pemesanan.id },
+      include: { model: Tiket },
+    });
   }
 
-  return res.send({
-    pemesanan,
-    detailPemesanan,
+  return res.render("pages/checkout", {
+    layout: "layouts/index",
+    title: "Your Order",
+    user: req.user,
+    notif: req.flash("notif"),
+    pms: detailPemesanan,
+    total: pemesanan,
   });
 };
 
@@ -198,7 +204,7 @@ exports.checkoutConfirmation = async (req, res) => {
 
     detailPemesanan.map(async (pmsn) => {
       let tiket = await getDataByConds(Tiket, {
-        id: parseInt(pmsn.tiket_id),
+        id: pmsn.tiket_id,
       });
       tiket.stok -= pmsn.jumlah_tiket;
 
@@ -216,13 +222,21 @@ exports.checkoutConfirmation = async (req, res) => {
 
 // Remove pemesanan
 exports.remove = async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
 
-  let detailPemesanan = await getDataByConds(Detail_pemesanan, { id: id }, res);
+  let detailPemesanan = await getDataByConds(
+    Detail_pemesanan,
+    {
+      id: id,
+    },
+    res
+  );
   console.log(detailPemesanan);
   let pemesanan = await getDataByConds(
     Pemesanan,
-    { id: parseInt(detailPemesanan.pemesanan_id) },
+    {
+      id: detailPemesanan.pemesanan_id,
+    },
     res
   );
 
@@ -233,7 +247,9 @@ exports.remove = async (req, res) => {
 
   let detailPemesananCheck = await getDataByConds(
     Detail_pemesanan,
-    { pemesanan_id: detailPemesanan.pemesanan_id },
+    {
+      pemesanan_id: detailPemesanan.pemesanan_id,
+    },
     res
   );
   if (detailPemesananCheck === null) {

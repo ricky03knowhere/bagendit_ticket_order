@@ -1,0 +1,46 @@
+<div class="col-md-6 p-4 mt-5 ms-5 card shadow rounded-4">
+  <h3 class="mb-4"><i class="fa fa-user-plus me-2"></i>Register Form</h3>
+  <form action="/api/auth/register" method="post">
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope mr-2"></i></span>
+      <input type="email" class="form-control" placeholder="Email address" aria-label="email"
+        aria-describedby="basic-addon1" name="email" required>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon2"><i class="fa fa-key mr-2"></i></span>
+      <input type="password" class="form-control" placeholder="Password" aria-label="Password"
+        aria-describedby="basic-addon2" name="password" required>
+    </div>
+
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon2"><i class="fa fa-phone mr-2"></i></span>
+      <input type="tel" class="form-control" placeholder="No telephone" aria-label="no_telp"
+        aria-describedby="basic-addon2" name="no_telp" required>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon2"><i class="fa fa-map-marked-alt mr-2"></i></span>
+      <select class="form-select form-control" name="pos_kode" required>
+        <option selected>Select Province</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1"><i class="fa fa-house-chimney mr-2"></i></span>
+      <input type="text" class="form-control" placeholder="Address" aria-label="alamat" aria-describedby="basic-addon1"
+        name="alamat" required>
+    </div>
+
+    <div class="col-12 pb-5">
+      <button class="btn  btn-info mt-2 float-end" type="submit">
+        <i class="fa fa-sign-in-alt me-2"></i>Register
+      </button>
+    </div>
+    <div class="text-center mt-5">
+      &nbsp;
+      Already registered? <a class="text-decoration-none" href="/api/auth/login"><b>Login here</b></a>
+    </div>
+  </form>
+</div>
+</div>

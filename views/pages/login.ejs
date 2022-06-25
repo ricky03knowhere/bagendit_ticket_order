@@ -1,1 +1,32 @@
-<h2>Login Page</h2>
+<div class="col-md-6 p-4 mt-5 ms-5 card shadow rounded-4">
+  <h3 class="mb-4"><i class="fa fa-unlock-alt me-2"></i>Login Form</h3>
+  <% if (alertNotif.length != 0) { %>
+  <div class="alert alert-warning mt-4">
+    <h6 class="fw-bold text-capitalize"><i class="fa fa-exclamation-triangle fa-2x me-3"></i><%= alertNotif %> </h6>
+  </div>
+  <% } %>
+  <form action="/api/auth/login" method="post">
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1"><i class="fa fa-user-lock mr-2"></i></span>
+      <input type="text" class="form-control" placeholder="Email Address" aria-label="email"
+        aria-describedby="basic-addon1" name="email" required>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon2"><i class="fa fa-key mr-2"></i></span>
+      <input type="password" class="form-control" placeholder="Password" aria-label="Password"
+        aria-describedby="basic-addon2" name="password" required>
+    </div>
+
+    <div class="col-12 pb-5">
+      <button class="btn  btn-info mt-2 float-end" type="submit">
+        <i class="fa fa-sign-in-alt me-2"></i>Login
+      </button>
+    </div>
+    <div class="text-center mt-5">
+      <a class="text-decoration-none" href="/api/auth/forgot-password">
+        <b><i class="fa fa-history me-2"></i>Forgot Password</b>
+      </a> &nbsp; <span style="color: #ccc;">•</span> &nbsp;
+      <a class="text-decoration-none" href="/api/auth/register"><b><i class="fa fa-user-plus me-2"></i>Register</b></a>
+    </div>
+  </form>
+</div>

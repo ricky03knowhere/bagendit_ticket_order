@@ -9,7 +9,7 @@ const {
 const { authValidation } = require("../middleware/authValidation");
 
 // Create new Pemesanan
-router.post("/:id", authValidation, create);
+router.post("/", authValidation, create);
 // Checkout Pemesanans
 router.get("/checkout", authValidation, checkout);
 // Checkout confirmation Pemesanans

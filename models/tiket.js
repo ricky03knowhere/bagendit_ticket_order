@@ -16,10 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "jenis_tiket",
       });
 
-      Tiket.belongsTo(models.Loket, {
-        foreignKey: "loket_id",
-        as: "tiket_loket",
-      });
+      Tiket.belongsTo(models.Loket);
     }
   }
   Tiket.init(

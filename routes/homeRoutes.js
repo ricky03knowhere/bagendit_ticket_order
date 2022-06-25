@@ -1,9 +1,8 @@
 const router = require("express").Router();
-const { index } = require("../controllers/HomeController");
+const { admin } = require("../controllers/HomeController");
 const { authValidation } = require("../middleware/authValidation");
 
-// Create new User
-router.get("/", authValidation, index);
+router.get("/dashboard",authValidation, admin);
 module.exports = {
   routes: router,
 };

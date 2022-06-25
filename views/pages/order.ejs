@@ -1,0 +1,176 @@
+<% if (alertNotif.length != 0) { %>
+<div class="alert alert-warning mt-3">
+  <h6 class="fw-bold text-capitalize"><i class="fa fa-exclamation-triangle fa-2x me-3"></i><%= alertNotif %> </h6>
+</div>
+<% } %>
+<div class="row justify-content-center mt-5 m-auto" id="loketContainer">
+
+</div>
+
+<div class="modal fade active" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">Form Pesan Tiket | <span class="loketTag text-capitalize"></span>
+        </h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/api/pemesanan/" method="post">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar-alt mr-2"></i></span>
+            <input type="datetime-local" class="form-control" placeholder="Tanggal Wisata" aria-label="tanggal_wisata"
+              aria-describedby="basic-addon1" name="tanggal_wisata" id="tanggal_wisata" required>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon2"><i class="fa fa-ticket mr-2"
+                style="transform: rotate(-30deg)"></i></span>
+            <select class="form-select form-control" name="tiket_id" id="tiket_id">
+
+            </select>
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text" id="basic-addon1"><i class="fa fa-shopping-cart mr-2"></i></span>
+            <input type="number" class="form-control" placeholder="Jumlah Tiket" aria-label="jumlah_tiket"
+              aria-describedby="basic-addon1" name="jumlah_tiket" id="jumlah_tiket" value="1" required>
+          </div>
+          <hr class="mt-3" width="15">
+          <p class="px-2 pt-2 mt-3 float-end">
+            <span class="fw-semibold justify-content-center">
+              <i class="fa fa-ticket me-1" style="transform: rotate(-30deg)"></i>
+              Tiket Anak-anak <span class="ms-5 float-end"><span id="price">Rp 0 </span><span class="text-muted">
+                  &Cross;
+                  <span id="qty">0</span></span></span>
+            </span>
+            <br>
+            <span class="text-success fw-bold justify-content-center  mt-2 " style="font-size: 1.15rem">
+              <i class="fa fa-money-bill-wave me-1"></i> Total Bayar <span class="ms-5 float-end" id="total">Rp
+                0</span>
+            </span>
+
+          </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Pesan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="lokets" class="d-none"><%= lokets %> </div>
+</div>
+
+<script>
+  const loketData = JSON.parse($('#lokets').text())
+  const data = loketData.map((e, i) => {
+    let tiket = e.Tikets.sort((a, b) => a.id - b.id)
+    return (`  <div class="col-md-4">
+    <div class="card p-4  mb-3 shadow rounded-4">
+      <h3 class="p-2 border border-end-0 border-info rounded-start bg-info bg-opacity-10 text-capitalize"><i
+          class="fa fa-store me-2"></i>${e.nama}</h3>
+      <p class="px-2 pt-2 mt-3">
+        <span class="text-muted fw-semibold d-block">
+          <i class="fa fa-map-location-dot me-2"></i>Lokasi: ${e.lokasi}
+        </span><br>
+        <span class="text-success fw-bold">
+          <i class="fa fa-ticket me-1" style="transform: rotate(-30deg)"></i> Stok Tiket :
+        </span>
+        <ul class="list-group">
+          <li class="list-group-item d-flex  align-items-center">
+            <i class="fa fa-baby ms-3 me-2"></i>Tiket Anak-anak
+            <span class="badge bg-primary rounded-pill me-1" style="position: absolute;right: 0;">${tiket[0].stok} tiket</span>
+          </li>
+          <li class="list-group-item d-flex  align-items-center">
+            <i class="fa fa-female ms-3 me-1"></i><i class="fa fa-male me-2"></i>Tiket Dewasa
+            <span class="badge bg-primary rounded-pill me-1" style="position: absolute;right: 0;">${tiket[1].stok} tiket</span>
+          </li>
+          <li class="list-group-item d-flex  align-items-center">
+            <i class="fa fa-star ms-3 me-2"></i> Tiket Eksklusif
+            <span class="badge bg-primary rounded-pill me-1" style="position: absolute;right: 0;">${tiket[2].stok} tiket</span>
+          </li>
+        </ul>
+      </p>
+      <button type="button" class="btn btn-info mt-2 btnModal${(i+1)}" data-bs-toggle="modal"
+        data-bs-target="#modal" data-tag="${e.nama}">Pesan Tiket</button>
+    </div>
+  </div>
+`)
+  })
+
+
+  $('#loketContainer').html(data)
+  $('.btnModal1').on('click', () => {
+    let loketTag = $('.btnModal1').data('tag')
+    $('#modal .loketTag').html(loketTag)
+    $('#tiket_id').html(`
+      <option selected value="0">Pilih Jenis Tiket</option>
+      <option value="1">Anak-anak</option>
+      <option value="4">Dewasa</option>
+      <option value="7">Eksklusif</option>
+    `)
+  })
+  $('.btnModal2').on('click', () => {
+    let loketTag = $('.btnModal2').data('tag')
+    $('#modal .loketTag').html(loketTag)
+    $('#tiket_id').html(`
+      <option selected value="0">Pilih Jenis Tiket</option>
+      <option value="2">Anak-anak</option>
+      <option value="5">Dewasa</option>
+      <option value="8">Eksklusif</option>
+    `)
+  })
+  $('.btnModal3').on('click', () => {
+    let loketTag = $('.btnModal3').data('tag')
+    $('#modal .loketTag').html(loketTag)
+    $('#tiket_id').html(`
+      <option selected value="0">Pilih Jenis Tiket</option>
+      <option value="3">Anak-anak</option>
+      <option value="6">Dewasa</option>
+      <option value="9">Eksklusif</option>
+    `)
+  })
+
+  function priceCheker(id) {
+    switch (true) {
+      case ['1', '2', '3'].includes(id):
+        return 30000
+        break;
+      case ['4', '5', '6'].includes(id):
+        return 50000
+        break;
+      case ['7', '8', '9'].includes(id):
+        return 100000
+        break;
+      default:
+        return 0
+    }
+  }
+
+  const jumlah_tiket = $('#jumlah_tiket')
+  const tiket_id = $('#tiket_id')
+  let total = 0
+  let qyt
+  let price
+
+  let priceDetail = () => {
+    price = priceCheker(tiket_id.val())
+    qyt = jumlah_tiket.val()
+    $('#price').html(price.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0
+    }))
+    $('#qty').html(qyt)
+
+    total = price * qyt
+    $('#total').html(total.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0
+    }))
+  }
+  tiket_id.on('change', () => priceDetail())
+  jumlah_tiket.on('change', () => priceDetail())
+</script>

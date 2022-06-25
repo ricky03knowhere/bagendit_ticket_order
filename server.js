@@ -25,7 +25,7 @@ app.set("view engine", "ejs");
 app.set("layout", "layouts/main-layouts");
 
 // <<--- Third-praty middleware Start --->>
-app.use(express.static('public'))
+app.use(express.static("public"));
 app.use(expressEjsLayouts);
 app.use(
   session({
@@ -68,9 +68,10 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.render("index", {
-    title: "Home",
-    layout: "layouts/main-layouts",
+  res.render("pages/login", {
+    title: "Login Page",
+    layout: "layouts/auth",
+    alertNotif: req.flash("alertNotif"),
   });
 });
 
