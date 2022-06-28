@@ -1,3 +1,8 @@
+<% if (notif.length != 0) { %>
+<div class="alert alert-success mt-3">
+  <h6 class="fw-bold text-capitalize"><i class="fa fa-check-circle fa-2x me-3"></i><%= notif %> </h6>
+</div>
+<% } %>
 <div class="row justify-content-center">
   <div class="col-md-10">
     <div class="card table-car shadow my-5 rounded-5">
@@ -6,7 +11,8 @@
           <i class="fas fa-shopping-cart mx-2"></i> Your Order
         </h4>
         <div class="justify-content-end d-flex">
-          <a href="/api/transaction/order" class="btn btn-warning btn-sm mb-3"><i class="fas fa-plus me-1"></i> Tambah Tiket</a>
+          <a href="/api/transaction/order" class="btn btn-warning btn-sm mb-3"><i class="fas fa-plus me-1"></i> Tambah
+            Tiket</a>
         </div>
 
         <div class="table-responsive">
@@ -19,7 +25,7 @@
               <th>Total Harga</th>
               <th>Aksi</th>
             </thead>
-            <tbody>
+            <tbody class="text-center">
               <% if (!total) { %>
               <tr>
                 <td colspan="6">
@@ -30,10 +36,9 @@
                 </td>
               </tr>
               <% } else { %>
-              <% let i = 1 %>
-              <% pms.forEach(pemesanan => { %>
+              <% pms.forEach((pemesanan, i) => { %>
               <tr class="text-center">
-                <td class="align-middle"><%= i++  %> </td>
+                <td class="align-middle"><%= (i+1)  %> </td>
                 <td class="align-middle"><%= pemesanan.Tiket.tiket_id %> </td>
                 <td class="align-middle">
                   <% let price = (pemesanan.Tiket.jenis_tiket_id === 1) ? 30000 : (pemesanan.Tiket.jenis_tiket_id === 2) ? 50000 : 100000 %>
@@ -51,7 +56,7 @@
                   }) %>
                 </td>
                 <td class="align-middle">
-                  <form action="checkout/remove/<%= pemesanan.id %> " method="post"
+                  <form action="remove/<%= pemesanan.id %> " method="post"
                     id="remove-order-<%= pemesanan.id %> ">
                     <!-- @csrf
                     {{ method_field("DELETE") }} -->

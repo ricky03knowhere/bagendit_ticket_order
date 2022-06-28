@@ -1,0 +1,67 @@
+<div class="row justify-content-center mb-4">
+  <div class="col-md-10">
+    <div class="card table-card shadow mb-6 rounded-5">
+      <div class="card-body py-3 px-3">
+        <h4 class="pt-1">
+          <i class="fas fa-history mx-2"></i>Hisory Pemesanan
+        </h4>
+
+        <div class="table-responsive">
+
+          <table class="table  my-5" id="dataTable">
+            <thead class="bg-info text-center">
+
+              <th>No.</th>
+              <th>Tanggal Pesan</th>
+              <th>Jumlah Tiket</th>
+              <th>Total Harga</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </thead>
+            <tbody class="text-center">
+              <% pemesanan.forEach((pms, i) => { %>
+              <tr>
+                <td><%= (i+1) %></td>
+                <% let date = new Date(pms.tanggal_pesan) 
+                  let day = ['Minggu','Senin', 'Selasa','Rabu', 'Kamis', 'Jum\'at', 'Sabtu']
+                  const month = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+                %>
+                <td><%= `${day[date.getDay()]}, ${date.getDate()} ${month[date.getMonth()]} ${date.getFullYear()}` %>
+                </td>
+                <td><%= total[i] + ' tiket' %></td>
+                <td>
+                  <%= pms.total_harga.toLocaleString("id-ID", {style: "currency",currency: "IDR",minimumFractionDigits: 0 }) %>
+                </td>
+                <th>
+
+                  <%  if(pms.status == "paid"){ %>
+                  <span class="badge rounded-pill text-bg-success"><i class="fa fa-check-circle me-1"></i>
+                    Paid</span>
+                  <% } else { %>
+                  <span class="badge rounded-pill text-bg-danger"><i class="fa fa-times-circle me-1"></i> Unpaid</span>
+                  <% } %>
+
+                </th>
+                <td>
+                  <a href="/api/pemesanan/history/<%= pms.id  %>" class="btn btn-info btn-sm">
+                    <i class="fas fa-info-circle"></i> Details
+                  </a>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+      <div class="text-center mb-3">
+        <a href="/api/transaction/order" class="btn btn-secondary ms-auto"><i class="fa fa-store me-2"></i>Kembali ke
+          Beranda</a>
+
+          <button onclick="window.history.back()" class="btn btn-secondary">
+            <i class="fas fa-backward me-2"></i>Back
+          </button>
+      </div>
+    </div>
+  </div>

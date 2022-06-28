@@ -141,7 +141,7 @@ exports.create = async (req, res) => {
 
   console.log(pemesanan.total_harga);
   updateData(Pemesanan, pemesanan, res);
-  req.flash("notif", "Order is successfully added to cart");
+  req.flash("notif", "Pemesanan Berhasil ditambahkan.");
   return res.redirect("/api/pemesanan/checkout");
 };
 
@@ -191,10 +191,10 @@ exports.checkoutConfirmation = async (req, res) => {
   let pemesanan = await getDataByConds(Pemesanan, condition, res);
   console.log(pemesanan);
   if (user.alamat === null) {
-    // res.flash('alert-notif', 'Please complete your identity first..');
+    // req.flash('alert-notif', 'Please complete your identity first..');
     return res.redirect("/api/profile/edit");
   } else if (user.no_telepon === null) {
-    // res.flash('alert-notif', 'Please complete your identity first..');
+    // req.flash('alert-notif', 'Please complete your identity first..');
     return res.redirect("/api/profile/edit");
   } else {
     let detailPemesanan = await getSomeDataByConds(Detail_pemesanan, {
@@ -216,7 +216,7 @@ exports.checkoutConfirmation = async (req, res) => {
 
   updateData(Pemesanan, pemesanan, res);
 
-  // res.flash('notif', 'Orders have been confirmed.')
+  req.flash('notif', 'Pemesanan telah terkonfirmasi.')
   return res.redirect("/api/pemesanan/history/" + pemesanan.id);
 };
 
@@ -255,6 +255,6 @@ exports.remove = async (req, res) => {
   if (detailPemesananCheck === null) {
     deleteData(Pemesanan, pemesanan.id, res);
   }
-  // res.flash('notif', 'Pemesanan telah dibatalkan');
+  req.flash('notif', 'Pemesanan telah dibatalkan');
   return res.redirect("/api/pemesanan/checkout");
 };

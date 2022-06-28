@@ -5,6 +5,11 @@
     <h6 class="fw-bold text-capitalize"><i class="fa fa-exclamation-triangle fa-2x me-3"></i><%= alertNotif %> </h6>
   </div>
   <% } %>
+  <% if (notif.length != 0) { %>
+  <div class="alert alert-success mt-4">
+    <h6 class="fw-bold text-capitalize"><i class="fa fa-check-circle fa-2x me-3"></i><%= notif %> </h6>
+  </div>
+  <% } %>
   <form action="/api/auth/login" method="post">
     <div class="input-group mb-3">
       <span class="input-group-text" id="basic-addon1"><i class="fa fa-user-lock mr-2"></i></span>

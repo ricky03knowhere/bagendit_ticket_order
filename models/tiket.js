@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
 
       Tiket.belongsTo(models.Jenis_tiket, {
         foreignKey: "jenis_tiket_id",
-        as: "jenis_tiket",
       });
 
       Tiket.belongsTo(models.Loket);

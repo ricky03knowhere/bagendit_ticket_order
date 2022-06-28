@@ -17,7 +17,7 @@ router.get("/checkout/confirm", authValidation, checkoutConfirmation);
 // Get Tiket to Pemesanan
 router.get("/:id", authValidation, index);
 // Remove Pemesanan
-router.delete("/remove/:id", authValidation, remove);
+router.post("/remove/:id", authValidation, remove);
 
 module.exports = {
   routes: router,

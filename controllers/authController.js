@@ -37,6 +37,8 @@ exports.login = async (req, res) => {
     {
       id: userData.id,
       user_id: userData.user_id,
+      no_telp: userData.no_telp,
+      alamat: userData.alamat,
       email: userData.email,
       nama_lengkap: userData.nama_lengkap,
       is_admin: userData.is_admin,
@@ -45,7 +47,7 @@ exports.login = async (req, res) => {
     key
   );
 
-  res.cookie('jwt', token, { httpOnly: true })
+  res.cookie("jwt", token, { httpOnly: true });
 
   if (userData.is_admin) {
     return res.redirect("/api/home/dashboard");
@@ -65,4 +67,10 @@ exports.register = (req, res) => {
 
   // res.flush('notif', 'User data successfully registered...');
   return res.redirect("/api/auth/login");
+};
+
+exports.logout = (req, res) => {
+  res.cookie("jwt", "");
+  req.flash("notif", "Anda telah logout");
+  res.redirect("/");
 };

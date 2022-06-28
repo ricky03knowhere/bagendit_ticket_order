@@ -1,0 +1,18 @@
+<div class="row justify-content-center mb-4">
+  <div class="col-md-5 p-4 mt-5 ms-5 card shadow rounded-4">
+    <img src="<%= user.photo %> " class="card-img-top rounded-4" style="object-fit: cover;" alt="..." height="200">
+    <div class="card-body">
+      <h3 class="card-title"><%=  %> </h3>
+      <% if (user.is_admin) { %>
+      <span class="badge rounded-pill bg-success mb-3">Administrator</span>
+      <% } else { %>
+      <span class="badge rounded-pill bg-primary mb-3">Pengunjung</span>
+      <% } %>
+
+      <p class="card-text"><i class="fa fa-envelope me-2"></i><%= user.email %> </p>
+      <p class="card-text"><i class="fa fa-phone me-2"></i><%= user.no_telp %> </p>
+      <p class="card-text"><i class="fa fa-location-dot me-2"></i><%= user.alamat %> </p>
+      <a href="#" class="btn btn-primary float-end mt-3"><i class="fa fa-edit me-2"></i>Edit Profil</a>
+    </div>
+  </div>
+</div>

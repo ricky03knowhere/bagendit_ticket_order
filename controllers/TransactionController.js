@@ -1,6 +1,9 @@
 const db = require("../models");
 const Loket = db.Loket;
 const Tiket = db.Tiket;
+const Pembayaran = db.Pembayaran;
+const Jenis_pembayaran = db.Jenis_pembayaran;
+const Pemesanan = db.Pemesanan;
 
 // exports.index = async (req, res) => {
 
@@ -22,4 +25,14 @@ exports.order = async (req, res) => {
     user: req.user,
     alertNotif: req.flash("alertNotif"),
   });
+};
+
+exports.transaksi = async () => {
+  const data = await Pembayaran.findAll({limit: 300, include: {model: Jenis_pembayaran}});
+  return data;
+};
+
+exports.pemesanan = async () => {
+  const data = await Pemesanan.findAll({limit: 300});
+  return data;
 };

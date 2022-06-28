@@ -1,0 +1,100 @@
+<div class="row justify-content-center mb-4">
+  <div class="col-md-10">
+    <div class="card table-card shadow mb-6">
+      <div class="card-body py-5 px-3">
+        <h4 class="pt-1 mb-5">
+          <i class="fas fa-shopping-cart mx-2"></i> Detail Pemesanan
+          </h2>
+
+          <%  if(pemesanan.status != 'pending'){ %>
+          <div class="alert alert-success" role="alert">
+            <span class="alert-icon"><i class="fa fa-info-circle fa-2x me-2"></i> Success!</span>
+            <span class="alert-text">Pesanan telah dikonfirmssi, silahkan lakuakan pembayaran dengan nominal
+              <b><%= pemesanan.total_harga.toLocaleString("id-ID", {style: "currency",currency: "IDR",minimumFractionDigits: 0}) %>
+              </b>
+              ke rekening <b>38-2918-1018</b> atas nama <b>Annie Leonhart</b></span>
+          </div>
+          <% }  %>
+
+          <span class="badge rounded-pill text-bg-warning mb-4" style="font-size: 0.8rem; text-transform: capitalize;">
+            <b><i class="ni ni-calendar-grid-58 me-2"></i>
+              <% let date = new Date(pemesanan.tanggal_pesan)
+                let day = ['Minggu','Senin', 'Selasa','Rabu', 'Kamis', 'Jum\'at', 'Sabtu']
+              %>
+              Tanggal Pesan :
+              <%= `${day[date.getDay()]}, ${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`  %></b>
+          </span>
+
+          <a href="history/print/<%= pemesanan.id %> " target="_blank"
+            class="badge rounded-pill text-bg-primary ms-3 text-decoration-none<%=  %> (pemesanan. == 1) ? '' : 'd-none' }}"
+            style="color: #e9ecef; font-size: 0.8rem; text-transform: capitalize;">
+            <i class="fa fa-print me-2"></i>Cetak Tiket
+          </a>
+
+
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="bg-info text-dark text-center">
+
+                <th>No.</th>
+                <th>Tiket</th>
+
+                <th>Harga</th>
+                <th>Jumlah</th>
+                <th>Total Harga</th>
+              </thead>
+              <tbody class="text-center">
+                <%  detailPemesanan.forEach((dp, i) => {  %>
+
+                <tr>
+                  <td><%= (i+1) %></td>
+                  <td><%= dp.Tiket.tiket_id %></td>
+                  <td>
+                    <% let price = (dp.Tiket.jenis_tiket_id === 1) ? 30000 : (dp.Tiket.jenis_tiket_id === 2) ? 50000 : 100000 %>
+                    <%= price.toLocaleString("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0}) %>
+                  </td>
+                  <td><%= dp.jumlah_tiket %> tiket </td>
+                  <td><%= dp.total_harga.toLocaleString("id-ID", {style: "currency",currency: "IDR",minimumFractionDigits: 0}) %> </td>
+                </tr>
+                <% }) %>
+                <tr>
+                  <td></td>
+                  <th colspan="3" style="text-align: left;padding-left: 2em;">Total Bayar</th>
+                  <td>
+                    <%=  pemesanan.total_harga.toLocaleString("id-ID", {style: "currency",currency: "IDR",minimumFractionDigits: 0}) %>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <th colspan="3" style="text-align: left;padding-left: 2em;">Status</th>
+                  <th>
+                    <% if(pemesanan.status === 'paid'){ %>
+                    <span class="badge rounded-pill badge-success"><i class="fa fa-check-circle me-1"></i> Paid</span>
+                    <% } else { %>
+                    <span class="badge rounded-pill bg-danger"><i class="fa fa-exclamation-circle me-1"></i>
+                      Unpaid</span>
+                    <% } %>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+      </div>
+
+
+      <div class="text-center mb-3">
+        <a href="/api/transaction/order" class="btn btn-secondary ms-auto"><i class="fa fa-store me-2"></i>Kembali ke
+          Beranda</a>
+
+          <button onclick="window.history.back()" class="btn btn-secondary">
+            <i class="fas fa-backward me-2"></i>Back
+          </button>
+      </div>
+    </div>
+
+  </div>
+</div>

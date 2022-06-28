@@ -68,11 +68,21 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.render("pages/login", {
-    title: "Login Page",
-    layout: "layouts/auth",
-    alertNotif: req.flash("alertNotif"),
-  });
+  const token = req.cookies.jwt;
+  if (token) {
+    if (req.user) {
+      return res.redirect("/");
+    } else {
+      return res.redirect("/api/transaction/order");
+    }
+  } else {
+    return res.render("pages/login", {
+      title: "Login Page",
+      layout: "layouts/auth",
+      alertNotif: req.flash("alertNotif"),
+      notif: req.flash("notif"),
+    });
+  }
 });
 
 app.use("/api/home", homeRoutes.routes);

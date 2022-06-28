@@ -7,6 +7,7 @@ const { sequelize } = require("../models");
 const db = require("../models");
 const Pemesanan = db.Pemesanan;
 const Detail_pemesanan = db.Detail_pemesanan;
+const Tiket = db.Tiket;
 
 // History Pemesanan
 exports.index = async (req, res) => {
@@ -41,9 +42,15 @@ exports.index = async (req, res) => {
         .then((data) => data)
         .catch((err) => console.log(err));
 
-      count.push(data[0]);
+      count.push(data[0].jumlah_tiket);
     } else {
-      return res.send({ pemesanan, count });
+      return res.render("pages/history", {
+        layout: "layouts/index",
+        title: "Order History",
+        user: req.user,
+        pemesanan,
+        total: count,
+      });
     }
   }
 };
@@ -52,11 +59,19 @@ exports.index = async (req, res) => {
 exports.detail = async (req, res) => {
   const id = req.params.id;
 
-  let detailPemesanan = await getSomeDataByConds(
-    Detail_pemesanan,
-    { pemesanan_id: id },
-    res
-  );
+  let detailPemesanan = await Detail_pemesanan.findAll({
+    where: { pemesanan_id: id },
+    include: { model: Tiket },
+  });
+
   let pemesanan = await getDataByConds(Pemesanan, { id: id }, res);
-  res.send({ detailPemesanan, pemesanan });
+  // res.json([detailPemesanan, pemesanan]);
+  res.render("pages/detailHistory", {
+    layout: "layouts/index",
+    title: "Your Order",
+    user: req.user,
+    notif: req.flash("notif"),
+    detailPemesanan,
+    pemesanan,
+  });
 };

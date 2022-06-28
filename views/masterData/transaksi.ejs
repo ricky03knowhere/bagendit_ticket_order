@@ -1,0 +1,59 @@
+<div class="row justify-content-center mb-4">
+  <div class="col-md-10">
+    <div class="card table-card shadow mb-6 rounded-5">
+      <div class="card-body py-3 px-3">
+        <h4 class="pt-1">
+          <i class="fas fa-fa-hand-holding-usd mx-2"></i>Transaksi <i class="fa fa-angle-double-right  me-2"></i>
+          <%- icon %> <%= title %>
+        </h4>
+        <div class="justify-content-end d-flex">
+          <a href="#!" class="btn btn-warning btn-sm mb-3"><i class="fas fa-plus me-1"></i> Tambah
+            Data</a>
+        </div>
+
+        <div class="table-responsive">
+
+          <table class="table  my-5" id="dataTable">
+            <thead class="bg-info text-center">
+              <th>No.</th>
+              <th>ID Pembayaran</th>
+              <th>Kode Pembayaran</th>
+              <th>Jenis Pembayaran</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </thead>
+            <tbody class="text-center">
+              <% data.sort().forEach((dt, i) => { %>
+              <tr>
+                <td><%= (i+1) %></td>
+                <td><%= dt.pembayaran_id %></td>
+                <td><%= dt.kode_pembayaran %></td>
+                <td><%= dt.Jenis_pembayaran.metode_pemb%></td>
+                <td><%= dt.status%></td>
+                <td>
+                  <a href="#!" class="btn btn-info btn-sm">
+                    <i class="fas fa-edit"></i> Edit
+                  </a>
+                  <a href="#!" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i> Hapus
+                  </a>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+      <div class="text-center mb-3">
+        <a href="/api/home/dashboard" class="btn btn-secondary ms-auto"><i class="fa fa-tachometer-alt me-2"></i>Kembali
+          ke
+          Dashboard</a>
+
+        <button onclick="window.history.back()" class="btn btn-secondary">
+          <i class="fas fa-backward me-2"></i>Back
+        </button>
+      </div>
+    </div>
+  </div>

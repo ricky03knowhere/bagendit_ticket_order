@@ -9,12 +9,13 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link <%= (title == 'Dashboard') ? 'active' : '' %>" aria-current="page" href="/dashboard"><i
-              class="fa fa-house-chimney me-2"></i>Home</a>
+          <a class="nav-link <%= (title == 'Dashboard') ? 'active' : '' %>" aria-current="page"
+            href="/api/transaction/order"><i class="fa fa-house-chimney me-2"></i>Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link <%= (title == 'Order') ? 'active' : '' %>" aria-current="page"
-            href="/api/transaction/order"><i class="fa fa-ticket me-2" style="transform: rotate(-30deg)"></i>Pesan Tiket</a>
+            href="/api/transaction/order"><i class="fa fa-ticket me-2" style="transform: rotate(-30deg)"></i>Pesan
+            Tiket</a>
         </li>
         <li class="nav-item">
           <a class="nav-link <%= (title == 'Your Order') ? 'active' : '' %>" aria-current="page"
@@ -35,11 +36,11 @@
               <%= user.nama_lengkap %> | <%= (user.is_admin) ? 'Administrator' : 'User' %>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#"><i class="fa fa-user-circle me-2"></i>Profil</a></li>
+              <li><a class="dropdown-item" href="/api/user/profile"><i class="fa fa-user-circle me-2"></i>Profil</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="#"><i class="fa fa-sign-out me-2"></i>Logout</a></li>
+              <li><a class="dropdown-item" href="/api/auth/logout"><i class="fa fa-sign-out me-2"></i>Logout</a></li>
             </ul>
           </li>
         </ul>
